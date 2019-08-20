@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import styled from "styled-components"
-import { Header, Image, Segment, Sidebar } from 'semantic-ui-react'
-import {getAllAreasOfOperation} from "../../api/index.js"
+import { Header } from 'semantic-ui-react'
+import {getAllAreasOfOperation} from "../../api/index.js.js"
 import EntryTable from "../EntryTable/EntryTable"
 
 export default class Home extends Component {
