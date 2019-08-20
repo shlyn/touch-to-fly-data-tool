@@ -21,7 +21,7 @@ export async function getAllAreasOfOperation() {
       }
     `;
   const results = await client.request(query);
-  console.log(results);
+  return results;
 }
 
 async function getAreaOfOperationForNumeral(input_numeral) {
@@ -38,6 +38,39 @@ async function getAreaOfOperationForNumeral(input_numeral) {
   const variables = { numeral: input_numeral };
   const results = await client.request(query, variables);
   console.log(results);
+}
+
+export async function getTasksById() {
+  const id = "e4a59928-3fbf-4f9c-bdc3-b32d2752a264";
+  const query = `
+    query TasksByAreaOfOperation($area_of_operation_id: String!) {
+      task(where: {area_of_operation_id: {_eq: "e4a59928-3fbf-4f9c-bdc3-b32d2752a264"}}) {
+        id
+        name
+        letter
+        knowledge_description
+        risk_management_description
+        skills_description
+        area_of_operation {
+          id
+          name
+        }
+         objective
+    resources {
+      id
+      resource_id
+      resource {
+        documentName
+        documentNumber
+      }
+    }
+      }
+      }
+    `;
+
+  const variables = { area_of_operation_id: id };
+  const results = await client.request(query, variables);
+  return results;
 }
 
 getAllAreasOfOperation();

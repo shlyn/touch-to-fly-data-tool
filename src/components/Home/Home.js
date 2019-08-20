@@ -1,28 +1,18 @@
-import React, { Component } from 'react'
-import styled from "styled-components"
-import { Header } from 'semantic-ui-react'
-import {getAllAreasOfOperation} from "../../api/index.js.js"
-import EntryTable from "../EntryTable/EntryTable"
+import React, { Component } from "react";
+import styled from "styled-components";
+import { Header } from "semantic-ui-react";
+import { getAllAreasOfOperation } from "../../api/index";
+import EntryTable from "../EntryTable/EntryTable";
 
 export default class Home extends Component {
-  componentDidMount(){
-  const data = getAllAreasOfOperation()
-console.log(data)
-  }
   render() {
-    return (
-     <Container>
-                <Header as='h3'>Current Entries</Header>
-                <EntryTable/>
-      </Container>
-    )
+    return <Container>some stuff</Container>;
   }
 }
 
 const Container = styled.div`
-margin-left: 10%;
-width: 90%;
-height: 100vh;
-border: solid green 5px;
-padding: 30px;
-`
+  margin-left: 150px;
+  width: 90%;
+  height: 100vh;
+  padding: 30px;
+`;
