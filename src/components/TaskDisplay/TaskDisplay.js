@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Button, Segment, Header, Table } from "semantic-ui-react";
+import { Button, Segment, Header, Table, Input } from "semantic-ui-react";
 import styled from "styled-components";
-
+import { knowledgeId, riskManagementId, skillsId } from "../../utils/data";
 export default class TaskDisplay extends Component {
+  state = { editing: false, ...this.props };
   render() {
     const {
       resources,
@@ -10,14 +11,71 @@ export default class TaskDisplay extends Component {
       knowledgeDescription,
       skillsDescription,
       riskManagementDescription,
-      objective
+      objective,
+      elements
     } = this.props;
+    const { editing } = this.state;
 
+    console.log(editing);
     const referenceDisplay = resources.map(data => {
-      return <Segment>{data.resource.documentName}</Segment>;
+      if (editing) {
+        return (
+          <Segment>
+            <Input
+              placeholder={data.resource.documentName}
+              value={this.state.resourceName}
+            />
+          </Segment>
+        );
+      } else {
+        return <Segment>{data.resource.documentName}</Segment>;
+      }
     });
+
+    const knowledgeDisplay = elements.map(data => {
+      const { text, abbreviation_code, type } = data;
+      if (type.id === knowledgeId) {
+        return (
+          <Table.Row>
+            <Table.Cell>{abbreviation_code}</Table.Cell>
+            <Table.Cell>{text}</Table.Cell>
+          </Table.Row>
+        );
+      }
+    });
+
+    const riskManagementDisplay = elements.map(data => {
+      const { text, abbreviation_code, type } = data;
+      if (type.id === riskManagementId) {
+        return (
+          <Table.Row>
+            <Table.Cell>{abbreviation_code}</Table.Cell>
+            <Table.Cell>{text}</Table.Cell>
+          </Table.Row>
+        );
+      }
+    });
+
+    const skillsDisplay = elements.map(data => {
+      const { text, abbreviation_code, type } = data;
+      if (type.id === skillsId) {
+        return (
+          <Table.Row>
+            <Table.Cell>{abbreviation_code}</Table.Cell>
+            <Table.Cell>{text}</Table.Cell>
+          </Table.Row>
+        );
+      }
+    });
+
     return (
       <TaskContainer>
+        <Button
+          color={editing ? "gray" : "green"}
+          onClick={() => this.setState({ editing: !editing })}
+        >
+          {editing ? "Cancel" : "Edit"}
+        </Button>
         <Segment.Group>
           <Segment color="red">
             <Header>References</Header>
@@ -41,21 +99,7 @@ export default class TaskDisplay extends Component {
                       <Table.HeaderCell>Description</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
-
-                  <Table.Body>
-                    <Table.Row>
-                      <Table.Cell>Cell</Table.Cell>
-                      <Table.Cell>Cell</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>Cell</Table.Cell>
-                      <Table.Cell>Cell</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>Cell</Table.Cell>
-                      <Table.Cell>Cell</Table.Cell>
-                    </Table.Row>
-                  </Table.Body>
+                  <Table.Body>{knowledgeDisplay}</Table.Body>
                 </Table>
               </Segment>
             </Segment.Group>
@@ -73,20 +117,7 @@ export default class TaskDisplay extends Component {
                       <Table.HeaderCell>Description</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
-                  <Table.Body>
-                    <Table.Row>
-                      <Table.Cell>Cell</Table.Cell>
-                      <Table.Cell>Cell</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>Cell</Table.Cell>
-                      <Table.Cell>Cell</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>Cell</Table.Cell>
-                      <Table.Cell>Cell</Table.Cell>
-                    </Table.Row>
-                  </Table.Body>
+                  <Table.Body>{riskManagementDisplay}</Table.Body>
                 </Table>
               </Segment>
             </Segment.Group>
@@ -104,20 +135,7 @@ export default class TaskDisplay extends Component {
                       <Table.HeaderCell>Description</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
-                  <Table.Body>
-                    <Table.Row>
-                      <Table.Cell>Cell</Table.Cell>
-                      <Table.Cell>Cell</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>Cell</Table.Cell>
-                      <Table.Cell>Cell</Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                      <Table.Cell>Cell</Table.Cell>
-                      <Table.Cell>Cell</Table.Cell>
-                    </Table.Row>
-                  </Table.Body>
+                  <Table.Body>{skillsDisplay}</Table.Body>
                 </Table>
               </Segment>
             </Segment.Group>
@@ -132,7 +150,6 @@ export default class TaskDisplay extends Component {
 }
 
 const TaskContainer = styled.div`
-  margin-left: 50px;
   height: 100vh;
   padding: 30px;
 `;

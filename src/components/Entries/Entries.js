@@ -20,7 +20,7 @@ export default class Entries extends Component {
 
     return (
       <Container>
-        <Header as="h3">Current Entries</Header>
+        <Header as="h3">Current Areas Of Operation</Header>
         {areasOfOperation && <EntryTable areasOfOperation={areasOfOperation} />}
       </Container>
     );

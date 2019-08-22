@@ -7,16 +7,20 @@ import Entry from "./components/Entry/Entry";
 import * as serviceWorker from "./serviceWorker";
 import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import Home from "./components/Home/Home";
+import { Provider } from "react-redux";
+import store from "./redux/index";
 
 const routing = (
-  <Router>
-    <App />
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/entries" component={Entries} />
-      <Route exact path="/entry" component={Entry} />
-    </Switch>
-  </Router>
+  <Provider store={store}>
+    <Router>
+      <App />
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/entries" component={Entries} />
+        <Route exact path="/entry" component={Entry} />
+      </Switch>
+    </Router>
+  </Provider>
 );
 
 ReactDOM.render(routing, document.getElementById("root"));

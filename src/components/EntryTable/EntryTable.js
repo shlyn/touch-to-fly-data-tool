@@ -1,25 +1,31 @@
 import React from "react";
-import { Icon, Label, Menu, Table } from "semantic-ui-react";
+import { Icon, Menu, Table } from "semantic-ui-react";
 import { Link, BrowserRouter as Router } from "react-router-dom";
-import { getTasksById } from "../../api";
+import { setTaskId } from "../../redux/tasks/actions";
+import { connect } from "react-redux";
 
 const EntryTable = ({ areasOfOperation }) => {
-  console.log(areasOfOperation);
   const rows = areasOfOperation.area_of_operation.map(
-    ({ name, numeral, order }) => {
+    ({ name, numeral, order, id }) => {
       return (
         <Table.Row selectable>
           <Table.Cell selectable>
             {" "}
-            <Link to="/entry">{order}</Link>
+            <Link to="/entry" onClick={() => setTaskId(id)}>
+              {order}
+            </Link>
           </Table.Cell>
           <Table.Cell selectable>
             {" "}
-            <a href="#">{numeral}</a>
+            <Link to="/entry" onClick={() => setTaskId(id)}>
+              {numeral}
+            </Link>
           </Table.Cell>
           <Table.Cell selectable>
             {" "}
-            <a href="#">{name}</a>
+            <Link to="/entry" onClick={() => setTaskId(id)}>
+              {name}
+            </Link>
           </Table.Cell>
         </Table.Row>
       );
@@ -40,14 +46,14 @@ const EntryTable = ({ areasOfOperation }) => {
         <Table.Row>
           <Table.HeaderCell colSpan="3">
             <Menu floated="right" pagination>
-              <Menu.Item as="a" icon>
+              <Menu.Item as="a" icon disabled>
                 <Icon name="chevron left" />
               </Menu.Item>
               <Menu.Item as="a">1</Menu.Item>
-              <Menu.Item as="a">2</Menu.Item>
+              {/* <Menu.Item as="a">2</Menu.Item>
               <Menu.Item as="a">3</Menu.Item>
-              <Menu.Item as="a">4</Menu.Item>
-              <Menu.Item as="a" icon>
+              <Menu.Item as="a">4</Menu.Item> */}
+              <Menu.Item as="a" icon disabled>
                 <Icon name="chevron right" />
               </Menu.Item>
             </Menu>
@@ -58,4 +64,11 @@ const EntryTable = ({ areasOfOperation }) => {
   );
 };
 
-export default EntryTable;
+const mapDispatchToProps = {
+  setTaskId
+};
+
+export default connect(
+  state => state,
+  mapDispatchToProps
+)(EntryTable);

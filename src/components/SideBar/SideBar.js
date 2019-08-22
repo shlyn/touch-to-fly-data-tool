@@ -26,11 +26,11 @@ export default class SideBar extends Component {
         >
           <Menu.Item as="a">
             <Icon name="pencil" />
-            New Entry
+            New
           </Menu.Item>
           <Menu.Item as="a">
             <Icon name="newspaper" />
-            <Link to="/entries">Entries</Link>
+            <Link to="/entries">Areas Of Operation</Link>
           </Menu.Item>
         </Sidebar>
       </Container>
