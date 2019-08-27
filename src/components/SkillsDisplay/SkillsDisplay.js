@@ -5,17 +5,19 @@ export default class SkillsDisplay extends Component {
   render() {
     const { elements, skillsDescription, editing } = this.props;
 
-    const skillsDisplay = elements.map(data => {
-      const { text, abbreviation_code, type } = data;
-      if (type.id === skillsId) {
-        return (
-          <Table.Row>
-            <Table.Cell>{abbreviation_code}</Table.Cell>
-            <Table.Cell>{text}</Table.Cell>
-          </Table.Row>
-        );
-      }
-    });
+    const skillsDisplay =
+      elements &&
+      elements.map(data => {
+        const { text, abbreviation_code, type } = data;
+        if (type.id === skillsId) {
+          return (
+            <Table.Row>
+              <Table.Cell>{abbreviation_code}</Table.Cell>
+              <Table.Cell>{text}</Table.Cell>
+            </Table.Row>
+          );
+        }
+      });
 
     return (
       <>

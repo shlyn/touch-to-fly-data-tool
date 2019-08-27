@@ -5,17 +5,19 @@ export default class RiskManagementDisplay extends Component {
   render() {
     const { elements, riskManagementDescription, editing } = this.props;
 
-    const riskManagementDisplay = elements.map(data => {
-      const { text, abbreviation_code, type } = data;
-      if (type.id === riskManagementId) {
-        return (
-          <Table.Row>
-            <Table.Cell>{abbreviation_code}</Table.Cell>
-            <Table.Cell>{text}</Table.Cell>
-          </Table.Row>
-        );
-      }
-    });
+    const riskManagementDisplay =
+      elements &&
+      elements.map(data => {
+        const { text, abbreviation_code, type } = data;
+        if (type.id === riskManagementId) {
+          return (
+            <Table.Row>
+              <Table.Cell>{abbreviation_code}</Table.Cell>
+              <Table.Cell>{text}</Table.Cell>
+            </Table.Row>
+          );
+        }
+      });
 
     return (
       <>

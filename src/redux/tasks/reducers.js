@@ -5,7 +5,7 @@ const initalState = { id: null };
 const taskReducer = (state = initalState, action) => {
   switch (action.type) {
     case GET_ID:
-      return state;
+      return { ...state };
     case SET_TASK_ID:
       return {
         ...state,

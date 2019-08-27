@@ -25,24 +25,7 @@ export async function getAllAreasOfOperation() {
   return results;
 }
 
-async function getAreaOfOperationForNumeral(input_numeral) {
-  const query = `
-    query AreaOfOperation($numeral: String!) {
-        area_of_operation(where: {numeral: {_eq: $numeral}}) {
-          id
-          name
-          numeral
-          order
-        }
-      }
-    `;
-  const variables = { numeral: input_numeral };
-  const results = await client.request(query, variables);
-  console.log(results);
-}
-
-export async function getTasksById(param) {
-  const id = "e4a59928-3fbf-4f9c-bdc3-b32d2752a264";
+export async function getTasksById({ id }) {
   const query = `
     query TasksByAreaOfOperation($area_of_operation_id: String!) {
       task(where: {area_of_operation_id: {_eq: "${id}"}}) {
@@ -60,19 +43,20 @@ export async function getTasksById(param) {
         }
          objective
          created_at
-    resources {
-      id
-      resource_id
-      resource {
-        documentName
-        documentNumber
+        resources {
+          id
+          resource_id
+          resource {
+            documentName
+            documentNumber
       }
     }    elements {
-      text
-      abbreviation_code
-      type {
-        id
-        text
+          id
+          text
+          abbreviation_code
+          type {
+           id
+           text
       }
     }
       }
@@ -105,16 +89,14 @@ export async function createNewTask({
   }`;
 
   const variables = {
-    id: areaOfOperationId,
+    id: uuidv4(),
     letter: taskLetter,
     area_of_operation_id: areaOfOperationId,
     name: taskName,
     created_at: dateFormatted
   };
 
-  console.log(post, variables);
   const results = await client.request(post, variables);
-  console.log(results);
   return results;
 }
 
@@ -129,7 +111,7 @@ export async function editTask({
   const dateFormatted = date.toISOString();
 
   const post = `
-  mutation updateTask($id: uuid!, $knowledge_description: String!, $objective: String!, $risk_management_description: String!, $skills_description: String!, $updated_at: timestamptz!){
+    mutation updateTask($id: uuid!, $knowledge_description: String!, $objective: String!, $risk_management_description: String!, $skills_description: String!, $updated_at: timestamptz!){
     update_task(where: { id: { _eq: $id } }, _set: {knowledge_description: $knowledge_description, objective: $objective, risk_management_description: $risk_management_description, skills_description: $skills_description, updated_at: $updated_at }) {
       affected_rows
       returning {
@@ -147,74 +129,66 @@ export async function editTask({
     updated_at: dateFormatted
   };
 
-  console.log(post, variables);
   const results = await client.request(post, variables);
-  console.log(results);
   return results;
 }
 
 export async function createElement({
   abbreviation_code,
   element_type_id,
-  id,
   task_id,
   text
 }) {
-  //   const date = new Date();
-  //   const dateFormatted = date.toISOString();
-  //   const post = `
-  // mutation {
-  //   insert_element(objects: { abbreviation_code: "", created_at: "", element_type_id: "", id: "", task_id: "", text: "" }) {
-  //     affected_rows
-  //     returning {
-  //       id
-  //       text
-  //     }
-  //   }
-  // }`;
-  //   const variables = {
-  //     id: taskId,
-  //     knowledge_description: knowledgeDescription,
-  //     objective: objective,
-  //     risk_management_description: riskManagementDescription,
-  //     skills_description: skillsDescription,
-  //     updated_at: dateFormatted
-  //   };
-  //   console.log(post, variables);
-  //   const results = await client.request(post, variables);
-  //   console.log(results);
-  //   return results;
+  const date = new Date();
+  const dateFormatted = date.toISOString();
+  const post = `
+  mutation( $abbreviation_code: String!, $created_at: timestamptz!, $element_type_id: uuid!, $id: uuid!, $task_id: uuid!, $text: String!) {
+    insert_element(objects: { abbreviation_code: $abbreviation_code, created_at: $created_at, element_type_id: $element_type_id, id: $id, task_id: $task_id, text: $text }) {
+      affected_rows
+      returning {
+        id
+        text
+      }
+    }
+  }`;
+  const variables = {
+    abbreviation_code,
+    created_at: dateFormatted,
+    element_type_id,
+    id: uuidv4(),
+    task_id,
+    text
+  };
+
+  const results = await client.request(post, variables);
+  return results;
 }
 
-export async function createResource({
-  abbreviation_code,
-  element_type_id,
-  id,
-  task_id,
-  text
-}) {
-  //   const date = new Date();
-  //   const dateFormatted = date.toISOString();
-  //   const post = `
-  // mutation {
-  //   insert_element(objects: { abbreviation_code: "", created_at: "", element_type_id: "", id: "", task_id: "", text: "" }) {
-  //     affected_rows
-  //     returning {
-  //       id
-  //       text
-  //     }
-  //   }
-  // }`;
-  //   const variables = {
-  //     id: taskId,
-  //     knowledge_description: knowledgeDescription,
-  //     objective: objective,
-  //     risk_management_description: riskManagementDescription,
-  //     skills_description: skillsDescription,
-  //     updated_at: dateFormatted
-  //   };
-  //   console.log(post, variables);
-  //   const results = await client.request(post, variables);
-  //   console.log(results);
-  //   return results;
+export async function createResource({ resource, taskId }) {
+  const date = new Date();
+  const dateFormatted = date.toISOString();
+  const { documentName, documentNumber } = resource;
+  const urlString = "www.test.com";
+  const post = `
+  mutation ($created_at: timestamptz!, $documentName: String!, $documentNumber: String!, $id: uuid!, $urlString: String!, $task_id: uuid!){
+  insert_resources(objects: {created_at: $created_at, documentName: $documentName, documentNumber: $documentNumber, id: $id, urlString: $urlString, tasks: {data: {task_id: $task_id}}}) {
+    affected_rows
+    returning {
+      id
+      documentName
+      documentNumber
+    }
+  }
+}
+`;
+  const variables = {
+    created_at: dateFormatted,
+    documentName,
+    documentNumber,
+    id: uuidv4(),
+    urlString,
+    task_id: taskId
+  };
+  const results = await client.request(post, variables);
+  return results;
 }

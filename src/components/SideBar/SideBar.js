@@ -1,16 +1,7 @@
 import React, { Component } from "react";
-import {
-  Button,
-  Header,
-  Icon,
-  Image,
-  Menu,
-  Segment,
-  Sidebar
-} from "semantic-ui-react";
+import { Icon, Sidebar, Menu } from "semantic-ui-react";
 import styled from "styled-components";
-import Home from "../Home/Home";
-import { Route, Link, BrowserRouter as Router } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default class SideBar extends Component {
   render() {
@@ -24,14 +15,12 @@ export default class SideBar extends Component {
           visible
           width="thin"
         >
-          <Menu.Item as="a">
-            <Icon name="pencil" />
-            New
-          </Menu.Item>
-          <Menu.Item as="a">
-            <Icon name="newspaper" />
-            <Link to="/entries">Areas Of Operation</Link>
-          </Menu.Item>
+          <Link to="/entries">
+            <Menu.Item as="a">
+              <Icon name="home" />
+              Areas Of Operation
+            </Menu.Item>
+          </Link>
         </Sidebar>
       </Container>
     );

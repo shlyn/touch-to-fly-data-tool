@@ -7,7 +7,7 @@ import EntryTable from "../EntryTable/EntryTable";
 export default class Entries extends Component {
   constructor(props) {
     super(props);
-    // Don't call this.setState() here!
+
     this.state = {};
   }
   async componentDidMount() {

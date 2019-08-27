@@ -16,9 +16,12 @@ class Entry extends Component {
   };
 
   async componentDidMount() {
-    getTaskId();
-    const { id } = this.props.task;
-    const tasks = await getTasksById(id);
+    let { id } = this.props;
+    if (id === undefined) {
+      id = localStorage.getItem("taskId");
+    }
+    const tasks = await getTasksById({ id });
+
     this.setState({
       tasks: tasks.task,
       activeItem: tasks.task[0].name,
@@ -35,30 +38,29 @@ class Entry extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  keyDownHandler = e => {
-    if (e.key === "Enter") {
-      const {
-        areaOfOperationId,
-        areaOfOperationName,
-        taskName,
-        taskLetter,
-        order,
-        numeral
-      } = this.state;
+  submitHandler = () => {
+    const {
+      areaOfOperationId,
+      areaOfOperationName,
+      taskName,
+      taskLetter,
+      order,
+      numeral,
+      tasks
+    } = this.state;
 
-      createNewTask({
-        areaOfOperationId,
-        areaOfOperationName,
-        order,
-        numeral,
-        taskName,
-        taskLetter
-      });
-    }
-  };
-
-  submitHandler = e => {
-    editTask();
+    createNewTask({
+      areaOfOperationId,
+      areaOfOperationName,
+      order,
+      numeral,
+      taskName,
+      taskLetter
+    });
+    const task = { name: taskName, letter: taskLetter };
+    tasks.push(task);
+    console.log(tasks);
+    this.setState({ tasks, activeItem: taskName, taskInput: false });
   };
 
   addTaskHandler = () => {
@@ -70,7 +72,14 @@ class Entry extends Component {
   };
 
   render() {
-    const { activeItem, tasks, taskInput, taskName, taskLetter } = this.state;
+    const {
+      activeItem,
+      tasks,
+      taskInput,
+      taskName,
+      taskLetter,
+      areaOfOperationName
+    } = this.state;
 
     const taskMenu =
       tasks &&
@@ -118,11 +127,19 @@ class Entry extends Component {
     return (
       <Container>
         <MenuContainer>
-          <Header>Preflight Preparation</Header>
+          <Header>{areaOfOperationName}</Header>
           <Menu pointing vertical>
             {taskMenu}
             {taskInput && (
-              <Menu.Item name="new" active={true}>
+              <Menu.Item
+                name="new"
+                active={true}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100px"
+                }}
+              >
                 <Dropdown
                   placeholder="A"
                   scrolling
@@ -135,14 +152,19 @@ class Entry extends Component {
                   onChange={e => this.inputHandler(e)}
                   name="taskName"
                   value={taskName}
-                  onKeyDown={e => this.keyDownHandler(e)}
+                  style={{ marginTop: "10px" }}
                 />
               </Menu.Item>
             )}
             <Menu.Menu position="right">
               <Button
-                style={{ background: "transparent" }}
-                onClick={() => this.addTaskHandler()}
+                style={{
+                  background: "transparent",
+                  color: `${taskInput && "green"}`
+                }}
+                onClick={() =>
+                  taskInput ? this.submitHandler() : this.addTaskHandler()
+                }
               >
                 <Icon name="add" />
               </Button>

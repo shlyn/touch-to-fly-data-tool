@@ -1,14 +1,18 @@
 import React, { Component } from "react";
-import { Button, Segment, Header, Table, Input } from "semantic-ui-react";
+import { Button, Segment, Header, Input } from "semantic-ui-react";
 import styled from "styled-components";
-import { skillsId } from "../../utils/data";
 import ReferenceDisplay from "../ReferenceDisplay/ReferenceDispay";
 import KnowledgeDisplay from "../KnowledgeDisplay/KnowledgeDisplay";
 import RiskManagementDisplay from "../RiskManagementDisplay/RiskManagementDisplay";
 import SkillsDisplay from "../SkillsDisplay/SkillsDisplay";
-import { editTask } from "../../api";
+import { editTask, createResource, createElement } from "../../api";
 export default class TaskDisplay extends Component {
-  state = { editing: false, ...this.props };
+  state = {
+    editing: false,
+    ...this.props,
+    originalElements: this.props.elements,
+    originalResources: this.props.resources
+  };
 
   inputHandler = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -25,7 +29,9 @@ export default class TaskDisplay extends Component {
       elements,
       resources
     } = this.state;
+
     this.setState({ editing: !editing });
+
     editTask({
       taskId,
       knowledgeDescription,
@@ -33,20 +39,50 @@ export default class TaskDisplay extends Component {
       riskManagementDescription,
       skillsDescription
     });
+
+    resources &&
+      resources.map(data => {
+        const { id, resource } = data;
+        if (id === undefined) {
+          createResource({ resource, taskId });
+        }
+      });
+
+    elements &&
+      elements.map(data => {
+        const { id, abbreviation_code, text, type } = data;
+        const typeId = type.id;
+
+        if (id === undefined) {
+          createElement({
+            abbreviation_code,
+            text,
+            element_type_id: typeId,
+            task_id: taskId
+          });
+        }
+      });
+  };
+
+  onAddingElement = params => {
+    this.setState(params);
   };
 
   render() {
     const {
-      resources,
+      editing,
+      resourceName,
+      resourceNumber,
+      knowledge,
+      skill,
+      riskManagement,
+      objective,
       knowledgeDescription,
       skillsDescription,
       riskManagementDescription,
-      objective,
-      elements,
-      taskId
-    } = this.props;
-    const { editing } = this.state;
-    console.log(this.state);
+      resources,
+      elements
+    } = this.state;
 
     return (
       <TaskContainer>
@@ -70,7 +106,10 @@ export default class TaskDisplay extends Component {
             resources={resources}
             editing={editing}
             inputHandler={this.inputHandler}
+            resourceName={resourceName}
+            resourceNumber={resourceNumber}
             currentResources={this.state.resources}
+            onAddingElement={this.onAddingElement}
           />
           <Segment color="orange">
             {" "}
@@ -81,7 +120,7 @@ export default class TaskDisplay extends Component {
                   placeholder={objective}
                   onChange={e => this.inputHandler(e)}
                   name="objective"
-                  value={this.state.objective}
+                  value={objective}
                   style={{ width: "100%" }}
                 />
               ) : (
@@ -94,21 +133,27 @@ export default class TaskDisplay extends Component {
             elements={elements}
             editing={editing}
             inputHandler={this.inputHandler}
+            knowledge={knowledge}
+            onAddingElement={this.onAddingElement}
           />
           <RiskManagementDisplay
             riskManagementDescription={riskManagementDescription}
             elements={elements}
             editing={editing}
             inputHandler={this.inputHandler}
+            riskManagement={riskManagement}
+            onAddingElement={this.onAddingElement}
           />
           <SkillsDisplay
+            skill={skill}
             skillsDescription={skillsDescription}
             elements={elements}
             editing={editing}
             inputHandler={this.inputHandler}
+            onAddingElement={this.onAddingElement}
           />
         </Segment.Group>
-        <Button color="red" style={{ marginBottom: "20px" }}>
+        <Button color="red" style={{ marginBottom: "20px" }} disabled>
           Delete
         </Button>
       </TaskContainer>

@@ -1,8 +1,5 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Header } from "semantic-ui-react";
-import { getAllAreasOfOperation } from "../../api/index";
-import EntryTable from "../EntryTable/EntryTable";
 
 export default class Home extends Component {
   render() {
