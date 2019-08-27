@@ -164,4 +164,20 @@ export default class TaskDisplay extends Component {
 const TaskContainer = styled.div`
   height: 100vh;
   padding: 30px;
+  @media (max-width: 1200px) {
+    width: 90%;
+    margin-left: 50px;
+  }
+  @media (max-width: 1000px) {
+    width: 80%;
+    margin-left: 100px;
+  }
+  @media (max-width: 800px) {
+    width: 70%;
+    margin-left: 150px;
+  }
+  @media (max-width: 600px) {
+    width: 60%;
+    margin-left: 200px;
+  }
 `;
