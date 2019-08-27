@@ -1,72 +1,52 @@
 import React, { Component } from "react";
 import { Button, Segment, Header, Table, Input } from "semantic-ui-react";
 import styled from "styled-components";
-import { knowledgeId, riskManagementId, skillsId } from "../../utils/data";
+import { skillsId } from "../../utils/data";
+import ReferenceDisplay from "../ReferenceDisplay/ReferenceDispay";
+import KnowledgeDisplay from "../KnowledgeDisplay/KnowledgeDisplay";
+import RiskManagementDisplay from "../RiskManagementDisplay/RiskManagementDisplay";
+import SkillsDisplay from "../SkillsDisplay/SkillsDisplay";
+import { editTask } from "../../api";
 export default class TaskDisplay extends Component {
   state = { editing: false, ...this.props };
+
+  inputHandler = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  submitHandler = () => {
+    const {
+      editing,
+      taskId,
+      knowledgeDescription,
+      objective,
+      riskManagementDescription,
+      skillsDescription,
+      elements,
+      resources
+    } = this.state;
+    this.setState({ editing: !editing });
+    editTask({
+      taskId,
+      knowledgeDescription,
+      objective,
+      riskManagementDescription,
+      skillsDescription
+    });
+  };
+
   render() {
     const {
       resources,
-      name,
       knowledgeDescription,
       skillsDescription,
       riskManagementDescription,
       objective,
-      elements
+      elements,
+      taskId
     } = this.props;
     const { editing } = this.state;
-
-    console.log(editing);
-    const referenceDisplay = resources.map(data => {
-      if (editing) {
-        return (
-          <Segment>
-            <Input
-              placeholder={data.resource.documentName}
-              value={this.state.resourceName}
-            />
-          </Segment>
-        );
-      } else {
-        return <Segment>{data.resource.documentName}</Segment>;
-      }
-    });
-
-    const knowledgeDisplay = elements.map(data => {
-      const { text, abbreviation_code, type } = data;
-      if (type.id === knowledgeId) {
-        return (
-          <Table.Row>
-            <Table.Cell>{abbreviation_code}</Table.Cell>
-            <Table.Cell>{text}</Table.Cell>
-          </Table.Row>
-        );
-      }
-    });
-
-    const riskManagementDisplay = elements.map(data => {
-      const { text, abbreviation_code, type } = data;
-      if (type.id === riskManagementId) {
-        return (
-          <Table.Row>
-            <Table.Cell>{abbreviation_code}</Table.Cell>
-            <Table.Cell>{text}</Table.Cell>
-          </Table.Row>
-        );
-      }
-    });
-
-    const skillsDisplay = elements.map(data => {
-      const { text, abbreviation_code, type } = data;
-      if (type.id === skillsId) {
-        return (
-          <Table.Row>
-            <Table.Cell>{abbreviation_code}</Table.Cell>
-            <Table.Cell>{text}</Table.Cell>
-          </Table.Row>
-        );
-      }
-    });
+    console.log(this.state);
 
     return (
       <TaskContainer>
@@ -76,70 +56,57 @@ export default class TaskDisplay extends Component {
         >
           {editing ? "Cancel" : "Edit"}
         </Button>
+        {editing && (
+          <Button
+            color="green"
+            onClick={() => this.submitHandler()}
+            style={{ marginLeft: "10px" }}
+          >
+            Submit
+          </Button>
+        )}
         <Segment.Group>
-          <Segment color="red">
-            <Header>References</Header>
-            <Segment.Group horizontal>{referenceDisplay}</Segment.Group>
-          </Segment>
-
+          <ReferenceDisplay
+            resources={resources}
+            editing={editing}
+            inputHandler={this.inputHandler}
+            currentResources={this.state.resources}
+          />
           <Segment color="orange">
             {" "}
             <Header>Objective</Header>
-            <Segment>{objective}</Segment>
+            <Segment>
+              {editing ? (
+                <Input
+                  placeholder={objective}
+                  onChange={e => this.inputHandler(e)}
+                  name="objective"
+                  value={this.state.objective}
+                  style={{ width: "100%" }}
+                />
+              ) : (
+                objective
+              )}
+            </Segment>
           </Segment>
-          <Segment color="blue">
-            <Header>Knowledge</Header>
-            <Segment.Group>
-              <Segment>{knowledgeDescription}</Segment>
-              <Segment>
-                <Table celled>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>Code</Table.HeaderCell>
-                      <Table.HeaderCell>Description</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>{knowledgeDisplay}</Table.Body>
-                </Table>
-              </Segment>
-            </Segment.Group>
-          </Segment>
-
-          <Segment color="yellow">
-            <Header>Risk Management</Header>
-            <Segment.Group>
-              <Segment>{riskManagementDescription}</Segment>
-              <Segment>
-                <Table celled>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>Code</Table.HeaderCell>
-                      <Table.HeaderCell>Description</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>{riskManagementDisplay}</Table.Body>
-                </Table>
-              </Segment>
-            </Segment.Group>
-          </Segment>
-
-          <Segment color="green">
-            <Header>Skills</Header>
-            <Segment.Group>
-              <Segment>{skillsDescription}</Segment>
-              <Segment>
-                <Table celled>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>Code</Table.HeaderCell>
-                      <Table.HeaderCell>Description</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>{skillsDisplay}</Table.Body>
-                </Table>
-              </Segment>
-            </Segment.Group>
-          </Segment>
+          <KnowledgeDisplay
+            knowledgeDescription={knowledgeDescription}
+            elements={elements}
+            editing={editing}
+            inputHandler={this.inputHandler}
+          />
+          <RiskManagementDisplay
+            riskManagementDescription={riskManagementDescription}
+            elements={elements}
+            editing={editing}
+            inputHandler={this.inputHandler}
+          />
+          <SkillsDisplay
+            skillsDescription={skillsDescription}
+            elements={elements}
+            editing={editing}
+            inputHandler={this.inputHandler}
+          />
         </Segment.Group>
         <Button color="red" style={{ marginBottom: "20px" }}>
           Delete
