@@ -59,7 +59,6 @@ class Entry extends Component {
     });
     const task = { name: taskName, letter: taskLetter };
     tasks.push(task);
-    console.log(tasks);
     this.setState({ tasks, activeItem: taskName, taskInput: false });
   };
 
