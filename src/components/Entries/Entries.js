@@ -5,13 +5,12 @@ import { getAllAreasOfOperation } from "../../api/index";
 import EntryTable from "../EntryTable/EntryTable";
 
 export default class Entries extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
+  state = {};
   async componentDidMount() {
-    const areasOfOperation = await getAllAreasOfOperation();
+    const results = await getAllAreasOfOperation();
+    const areasOfOperation = results.area_of_operation.sort(
+      (a, b) => parseFloat(a.order) - parseFloat(b.order)
+    );
     this.setState({ areasOfOperation });
   }
 
