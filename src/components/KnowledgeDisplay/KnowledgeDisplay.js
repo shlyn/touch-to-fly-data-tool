@@ -141,7 +141,7 @@ export default class KnowledgeDisplay extends Component {
                       <Icon name="add" />
                     </Button>
                   )}
-                  {adding && addingDisplay}
+                  {adding && editing && addingDisplay}
                 </Table.Body>
               </Table>
             </Segment>

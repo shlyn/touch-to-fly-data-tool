@@ -89,7 +89,7 @@ export default class ReferenceDispay extends Component {
                   <Icon name="add" />
                 </Button>
               )}
-              {adding && (
+              {adding && editing && (
                 <>
                   <Table.Row>
                     <Table.Cell>
