@@ -1,12 +1,15 @@
 import React, { Component } from "react";
-import { Icon, Menu, Table, Button, Input } from "semantic-ui-react";
+import { Icon, Table, Button, Input } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { setTaskId, setTaskName } from "../../redux/tasks/actions";
 import { connect } from "react-redux";
 import { createAreaOfOperation, deleteAreaOfOperation } from "../../api";
 
 class EntryTable extends Component {
-  state = { adding: false, areasOfOperation: this.props.areasOfOperation };
+  state = {
+    adding: false,
+    areasOfOperation: this.props.areasOfOperation
+  };
 
   setTask = ({ id, name }) => {
     localStorage.setItem("taskId", id);
@@ -75,6 +78,8 @@ class EntryTable extends Component {
       this.setState({ areasOfOperation: newAreasOfOperation });
     }
   };
+
+  setAOODisplay = ({ i }) => {};
 
   render() {
     const { editing, editHandler } = this.props;
@@ -186,6 +191,7 @@ class EntryTable extends Component {
     return (
       <>
         <Button
+          disabled={adding}
           color={editing ? "gray" : "green"}
           onClick={() => (editing ? this.cancelHandler() : editHandler())}
         >
@@ -217,6 +223,19 @@ class EntryTable extends Component {
           <Table.Footer>
             <Table.Row>
               <Table.HeaderCell colSpan={editing ? "4" : "3"}>
+                {adding && (
+                  <Button
+                    color="gray"
+                    onClick={() => this.setState({ adding: false })}
+                    style={{
+                      fontSize: "1.2em",
+                      padding: "10px",
+                      width: "100px"
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                )}
                 <Button
                   style={{
                     fontSize: "1.2em",
@@ -234,15 +253,6 @@ class EntryTable extends Component {
                   <Icon name="add" />
                   {adding ? "Submit" : "New"}
                 </Button>
-                <Menu floated="right" pagination>
-                  <Menu.Item as="a" icon disabled>
-                    <Icon name="chevron left" />
-                  </Menu.Item>
-                  <Menu.Item as="a">1</Menu.Item>
-                  <Menu.Item as="a" icon disabled>
-                    <Icon name="chevron right" />
-                  </Menu.Item>
-                </Menu>
               </Table.HeaderCell>
             </Table.Row>
           </Table.Footer>

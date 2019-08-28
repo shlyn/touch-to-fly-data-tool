@@ -28,7 +28,15 @@ class Entry extends Component {
     const results = await getTasksById({ id });
     const tasks =
       results.task.length > 0 &&
-      results.task.sort((a, b) => parseFloat(a.letter) - parseFloat(b.letter));
+      results.task.sort((a, b) => {
+        if (a.letter < b.letter) {
+          return -1;
+        }
+        if (a.letter > b.letter) {
+          return 1;
+        }
+        return 0;
+      });
     if (tasks.length > 0) {
       this.setState({
         tasks: tasks,

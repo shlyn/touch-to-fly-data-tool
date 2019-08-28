@@ -67,6 +67,7 @@ export default class ReferenceDispay extends Component {
                   name="documentNumber"
                   value={resource.documentNumber}
                   style={{ width: "100%" }}
+                  disabled={resource_id === undefined}
                 />
               </Table.Cell>
               <Table.Cell>
@@ -77,6 +78,7 @@ export default class ReferenceDispay extends Component {
                   name="documentName"
                   value={resource.documentName}
                   style={{ width: "100%" }}
+                  disabled={resource_id === undefined}
                 />
               </Table.Cell>
               <Table.Cell>
@@ -89,6 +91,7 @@ export default class ReferenceDispay extends Component {
                   }}
                   color="red"
                   icon
+                  disabled={resource_id === undefined}
                   onClick={() =>
                     this.deleteHandler({
                       id,

@@ -38,7 +38,7 @@ export default class TaskDisplay extends Component {
       name,
       letter
     } = this.state;
-    console.log(name, letter);
+
     this.setState({ editing: !editing });
 
     editTask({
