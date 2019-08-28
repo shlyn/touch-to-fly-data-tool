@@ -24,7 +24,7 @@ class Entry extends Component {
     if (name === undefined) {
       name = localStorage.getItem("taskName");
     }
-    console.log(id);
+
     const results = await getTasksById({ id });
     const tasks =
       results.task.length > 0 &&
@@ -74,6 +74,37 @@ class Entry extends Component {
     this.setState({ taskLetter: data.value });
   };
 
+  getTasks = async () => {
+    let { id, name } = this.props;
+
+    if (id === undefined) {
+      id = localStorage.getItem("taskId");
+    }
+    if (name === undefined) {
+      name = localStorage.getItem("taskName");
+    }
+
+    const results = await getTasksById({ id });
+    const tasks =
+      results.task.length > 0 &&
+      results.task.sort((a, b) => parseFloat(a.letter) - parseFloat(b.letter));
+    if (tasks.length > 0) {
+      this.setState({
+        tasks: tasks,
+        activeItem: tasks[0].name,
+        areaOfOperationId: tasks[0].area_of_operation.id,
+        areaOfOperationName: tasks[0].area_of_operation.name,
+        order: tasks[0].area_of_operation.order,
+        numeral: tasks[0].area_of_operation.numeral
+      });
+    } else {
+      this.setState({
+        tasks: [],
+        areaOfOperationId: id,
+        areaOfOperationName: name
+      });
+    }
+  };
   render() {
     const {
       activeItem,
@@ -109,7 +140,8 @@ class Entry extends Component {
           risk_management_description,
           objective,
           elements,
-          id
+          id,
+          letter
         } = data;
         if (activeItem === name) {
           return (
@@ -122,6 +154,8 @@ class Entry extends Component {
               objective={objective}
               elements={elements}
               taskId={id}
+              letter={letter}
+              getTasks={this.getTasks}
             />
           );
         }

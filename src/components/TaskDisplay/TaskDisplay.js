@@ -27,9 +27,11 @@ export default class TaskDisplay extends Component {
       riskManagementDescription,
       skillsDescription,
       elements,
-      resources
+      resources,
+      name,
+      letter
     } = this.state;
-
+    console.log(name, letter);
     this.setState({ editing: !editing });
 
     editTask({
@@ -37,7 +39,9 @@ export default class TaskDisplay extends Component {
       knowledgeDescription,
       objective,
       riskManagementDescription,
-      skillsDescription
+      skillsDescription,
+      name,
+      letter
     });
 
     resources &&
@@ -68,6 +72,12 @@ export default class TaskDisplay extends Component {
     this.setState(params);
   };
 
+  cancelHandler = async () => {
+    const { getTasks } = this.props;
+    const { editing } = this.state;
+    await getTasks();
+    this.setState({ ...this.props, editing: !editing });
+  };
   render() {
     const {
       editing,
@@ -81,14 +91,40 @@ export default class TaskDisplay extends Component {
       skillsDescription,
       riskManagementDescription,
       resources,
-      elements
+      elements,
+      name,
+      letter
     } = this.state;
 
+    const headerInputs = (
+      <>
+        <Container>
+          <Input
+            placeholder={letter}
+            name="letter"
+            value={letter}
+            onChange={e => this.inputHandler(e)}
+            style={{ width: "5%" }}
+          />
+          <Input
+            placeholder={name}
+            name="name"
+            value={name}
+            onChange={e => this.inputHandler(e)}
+            style={{ marginLeft: "5px" }}
+          />
+        </Container>
+      </>
+    );
     return (
       <TaskContainer>
         <Button
           color={editing ? "gray" : "green"}
-          onClick={() => this.setState({ editing: !editing })}
+          onClick={() =>
+            editing
+              ? this.cancelHandler()
+              : this.setState({ editing: !editing })
+          }
         >
           {editing ? "Cancel" : "Edit"}
         </Button>
@@ -100,6 +136,11 @@ export default class TaskDisplay extends Component {
           >
             Submit
           </Button>
+        )}
+        {editing ? (
+          headerInputs
+        ) : (
+          <Header as="h3">{`${letter}.   ${name}`}</Header>
         )}
         <Segment.Group>
           <ReferenceDisplay
@@ -180,4 +221,8 @@ const TaskContainer = styled.div`
     width: 60%;
     margin-left: 200px;
   }
+`;
+
+const Container = styled.div`
+  padding-top: 10px;
 `;

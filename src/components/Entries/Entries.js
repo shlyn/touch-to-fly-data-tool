@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Header, Button } from "semantic-ui-react";
+import { Header } from "semantic-ui-react";
 import { getAllAreasOfOperation, editAreaOfOperation } from "../../api/index";
 import EntryTable from "../EntryTable/EntryTable";
 
@@ -23,9 +23,17 @@ export default class Entries extends Component {
     this.setState({ editing: !editing });
   };
 
+  getAreasOfOperation = async () => {
+    const results = await getAllAreasOfOperation();
+    const areasOfOperation = results.area_of_operation.sort(
+      (a, b) => parseFloat(a.order) - parseFloat(b.order)
+    );
+    return areasOfOperation;
+  };
+
   render() {
     const { areasOfOperation, editing } = this.state;
-
+    console.log(areasOfOperation);
     return (
       <Container>
         <Header as="h3">Current Areas Of Operation</Header>
@@ -35,6 +43,7 @@ export default class Entries extends Component {
             editing={editing}
             updateAOOHandler={this.updateAOOHandler}
             editHandler={this.editHandler}
+            getAreasOfOperation={this.getAreasOfOperation}
           />
         )}
       </Container>

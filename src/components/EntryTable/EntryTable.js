@@ -7,6 +7,7 @@ import { createAreaOfOperation } from "../../api";
 
 class EntryTable extends Component {
   state = { adding: false, areasOfOperation: this.props.areasOfOperation };
+
   setTask = ({ id, name }) => {
     localStorage.setItem("taskId", id);
     localStorage.setItem("taskName", name);
@@ -54,9 +55,20 @@ class EntryTable extends Component {
     editHandler();
   };
 
+  cancelHandler = async () => {
+    const { editHandler, getAreasOfOperation } = this.props;
+
+    this.setState({
+      areasOfOperation: await getAreasOfOperation()
+    });
+
+    editHandler();
+  };
+
   render() {
     const { editing, editHandler } = this.props;
     const { adding, order, numeral, title, areasOfOperation } = this.state;
+
     const rows = areasOfOperation.map(({ name, numeral, order, id }, i) => {
       if (editing) {
         return (
@@ -147,7 +159,7 @@ class EntryTable extends Component {
       <>
         <Button
           color={editing ? "gray" : "green"}
-          onClick={() => editHandler()}
+          onClick={() => (editing ? this.cancelHandler() : editHandler())}
         >
           {editing ? "Cancel" : "Edit"}
         </Button>

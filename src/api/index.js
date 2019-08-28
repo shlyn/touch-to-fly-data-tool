@@ -105,14 +105,16 @@ export async function editTask({
   knowledgeDescription,
   objective,
   riskManagementDescription,
-  skillsDescription
+  skillsDescription,
+  name,
+  letter
 }) {
   const date = new Date();
   const dateFormatted = date.toISOString();
 
   const post = `
-    mutation updateTask($id: uuid!, $knowledge_description: String!, $objective: String!, $risk_management_description: String!, $skills_description: String!, $updated_at: timestamptz!){
-    update_task(where: { id: { _eq: $id } }, _set: {knowledge_description: $knowledge_description, objective: $objective, risk_management_description: $risk_management_description, skills_description: $skills_description, updated_at: $updated_at }) {
+    mutation updateTask($id: uuid!, $knowledge_description: String!, $objective: String!, $risk_management_description: String!, $skills_description: String!, $updated_at: timestamptz!, $name: String!, $letter: String!){
+    update_task(where: { id: { _eq: $id } }, _set: {knowledge_description: $knowledge_description, objective: $objective, risk_management_description: $risk_management_description, skills_description: $skills_description, updated_at: $updated_at, name: $name, letter: $letter }) {
       affected_rows
       returning {
         id
@@ -126,7 +128,9 @@ export async function editTask({
     objective: objective,
     risk_management_description: riskManagementDescription,
     skills_description: skillsDescription,
-    updated_at: dateFormatted
+    updated_at: dateFormatted,
+    name,
+    letter
   };
 
   const results = await client.request(post, variables);
@@ -251,8 +255,6 @@ mutation ($id: uuid!, $name: String!, $numeral: String!, $order: Int!, $updated_
   const results = await client.request(post, variables);
   return results;
 }
-
-// update task
 
 // update element
 
