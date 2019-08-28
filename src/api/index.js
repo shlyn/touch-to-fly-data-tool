@@ -221,3 +221,47 @@ mutation ($id: uuid!, $name: String!, $numeral: String!, $order: Int!, $created_
   const results = await client.request(post, variables);
   return results;
 }
+
+export async function editAreaOfOperation({ id, order, numeral, name }) {
+  const date = new Date();
+  const dateFormatted = date.toISOString();
+  const orderNumber = Number(order);
+  const post = `
+mutation ($id: uuid!, $name: String!, $numeral: String!, $order: Int!, $updated_at: timestamptz!){
+  update_area_of_operation(where: {id: {_eq: $id}}, _set: {name: $name, numeral: $numeral, order: $order, updated_at: $updated_at}) {
+    affected_rows
+    returning {
+      id
+      name
+      numeral
+      order
+    }
+  }
+}
+
+`;
+  const variables = {
+    id,
+    name,
+    order: orderNumber,
+    numeral,
+    updated_at: dateFormatted
+  };
+
+  const results = await client.request(post, variables);
+  return results;
+}
+
+// update task
+
+// update element
+
+// update resource
+
+// remove element
+
+// remove resource
+
+// remove AOP
+
+// remove task

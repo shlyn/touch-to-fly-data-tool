@@ -17,12 +17,14 @@ class Entry extends Component {
 
   async componentDidMount() {
     let { id, name } = this.props;
+
     if (id === undefined) {
       id = localStorage.getItem("taskId");
     }
     if (name === undefined) {
       name = localStorage.getItem("taskName");
     }
+    console.log(id);
     const results = await getTasksById({ id });
     const tasks =
       results.task.length > 0 &&
