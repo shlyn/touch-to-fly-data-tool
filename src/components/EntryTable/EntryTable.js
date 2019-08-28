@@ -1,14 +1,18 @@
 import React, { Component } from "react";
 import { Icon, Menu, Table, Button, Input } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import { setTaskId } from "../../redux/tasks/actions";
+import { setTaskId, setTaskName } from "../../redux/tasks/actions";
 import { connect } from "react-redux";
+import { createAreaOfOperation } from "../../api";
 
 class EntryTable extends Component {
   state = { adding: false, areasOfOperation: this.props.areasOfOperation };
-  setTaskId = id => {
+  setTask = ({ id, name }) => {
+    console.log(name);
     localStorage.setItem("taskId", id);
+    localStorage.setItem("taskName", name);
     this.props.setTaskId(id);
+    this.props.setTaskName(name);
   };
 
   inputHandler = e => {
@@ -26,7 +30,7 @@ class EntryTable extends Component {
       order: "",
       name: ""
     });
-    // api call for adding AOP here
+    createAreaOfOperation({ order, numeral, title });
   };
 
   render() {
@@ -36,19 +40,19 @@ class EntryTable extends Component {
         <Table.Row>
           <Table.Cell selectable>
             {" "}
-            <Link to="/entry" onClick={() => this.setTaskId(id)}>
+            <Link to="/entry" onClick={() => this.setTask({ id, name })}>
               {order}
             </Link>
           </Table.Cell>
           <Table.Cell selectable>
             {" "}
-            <Link to="/entry" onClick={() => this.setTaskId(id)}>
+            <Link to="/entry" onClick={() => this.setTask({ id, name })}>
               {numeral}
             </Link>
           </Table.Cell>
           <Table.Cell selectable>
             {" "}
-            <Link to="/entry" onClick={() => this.setTaskId(id)}>
+            <Link to="/entry" onClick={() => this.setTask({ id, name })}>
               {name}
             </Link>
           </Table.Cell>
@@ -137,7 +141,8 @@ class EntryTable extends Component {
 }
 
 const mapDispatchToProps = {
-  setTaskId
+  setTaskId,
+  setTaskName
 };
 
 export default connect(

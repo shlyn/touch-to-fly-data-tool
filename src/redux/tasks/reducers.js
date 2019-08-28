@@ -1,6 +1,6 @@
-import { GET_ID, SET_TASK_ID } from "./types";
+import { GET_ID, SET_TASK_ID, SET_TASK_NAME } from "./types";
 
-const initalState = { id: null };
+const initalState = { id: null, name: null };
 
 const taskReducer = (state = initalState, action) => {
   switch (action.type) {
@@ -10,6 +10,11 @@ const taskReducer = (state = initalState, action) => {
       return {
         ...state,
         id: action.payload
+      };
+    case SET_TASK_NAME:
+      return {
+        ...state,
+        name: action.payload
       };
     default:
       return state;

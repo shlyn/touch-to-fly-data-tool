@@ -192,3 +192,32 @@ export async function createResource({ resource, taskId }) {
   const results = await client.request(post, variables);
   return results;
 }
+
+export async function createAreaOfOperation({ order, numeral, title }) {
+  const date = new Date();
+  const dateFormatted = date.toISOString();
+  const orderNumber = Number(order);
+  const post = `
+mutation ($id: uuid!, $name: String!, $numeral: String!, $order: Int!, $created_at: timestamptz!) {
+  insert_area_of_operation(objects: {id: $id, name: $name, numeral: $numeral, order: $order, created_at: $created_at}) {
+    returning {
+      id
+      name
+      numeral
+      order
+    }
+    affected_rows
+  }
+}
+`;
+  const variables = {
+    id: uuidv4(),
+    name: title,
+    order: orderNumber,
+    numeral,
+    created_at: dateFormatted
+  };
+
+  const results = await client.request(post, variables);
+  return results;
+}
