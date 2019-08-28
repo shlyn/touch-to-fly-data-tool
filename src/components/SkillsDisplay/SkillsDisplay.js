@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { skillsId } from "../../utils/data";
 import { Button, Segment, Header, Table, Icon, Input } from "semantic-ui-react";
+import { deleteElement } from "../../api";
+const uuidv4 = require("uuid/v4");
 export default class SkillsDisplay extends Component {
   state = { adding: false, newCode: "", newText: "" };
 
@@ -8,15 +10,17 @@ export default class SkillsDisplay extends Component {
     const { elements } = this.props;
     const { newCode, newText } = this.state;
     const { adding } = this.state;
-
+    const id = uuidv4();
     const element = {
       abbreviation_code: newCode,
       text: newText,
-      type: { id: skillsId }
+      type: { id: skillsId },
+      id,
+      addition: true
     };
 
     elements.push(element);
-    console.log(elements);
+
     this.props.onAddingElement({
       elements,
       abbreviation_code: "",
@@ -29,14 +33,31 @@ export default class SkillsDisplay extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+
+  deleteHandler = ({ abbreviation_code, id }) => {
+    const { updateElements } = this.props;
+    const result = window.confirm(
+      `Are you sure you want to delete ${abbreviation_code}?`
+    );
+    if (result === true) {
+      deleteElement({ id });
+      updateElements({ id });
+    }
+  };
+
   render() {
-    const { elements, skillsDescription, editing, inputHandler } = this.props;
+    const {
+      elements,
+      skillsDescription,
+      editing,
+      editElementHandler
+    } = this.props;
     const { adding, newCode, newText } = this.state;
 
     const skillsDisplay =
       elements &&
       elements.map(data => {
-        const { text, abbreviation_code, type } = data;
+        const { text, abbreviation_code, type, id } = data;
         if (type.id === skillsId) {
           if (editing) {
             return (
@@ -46,7 +67,7 @@ export default class SkillsDisplay extends Component {
                     placeholder={abbreviation_code}
                     value={abbreviation_code}
                     name="abbreviation_code"
-                    onChange={e => inputHandler(e)}
+                    onChange={e => editElementHandler({ e, id })}
                   />
                 </Table.Cell>
                 <Table.Cell>
@@ -55,8 +76,25 @@ export default class SkillsDisplay extends Component {
                     value={text}
                     name="text"
                     style={{ width: "100%" }}
-                    onChange={e => inputHandler(e)}
+                    onChange={e => editElementHandler({ e, id })}
                   />
+                </Table.Cell>
+                <Table.Cell>
+                  {" "}
+                  <Button
+                    style={{
+                      fontSize: "1.2em",
+                      padding: "10px",
+                      width: "75px"
+                    }}
+                    color="red"
+                    icon
+                    onClick={() =>
+                      this.deleteHandler({ id, abbreviation_code })
+                    }
+                  >
+                    <Icon name="trash" position="right" />
+                  </Button>
                 </Table.Cell>
               </Table.Row>
             );
@@ -113,6 +151,7 @@ export default class SkillsDisplay extends Component {
                   <Table.Row>
                     <Table.HeaderCell>Code</Table.HeaderCell>
                     <Table.HeaderCell>Description</Table.HeaderCell>
+                    {editing && <Table.HeaderCell>Delete</Table.HeaderCell>}
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>

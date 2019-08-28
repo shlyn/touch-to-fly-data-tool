@@ -3,7 +3,7 @@ import { Icon, Menu, Table, Button, Input } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { setTaskId, setTaskName } from "../../redux/tasks/actions";
 import { connect } from "react-redux";
-import { createAreaOfOperation } from "../../api";
+import { createAreaOfOperation, deleteAreaOfOperation } from "../../api";
 
 class EntryTable extends Component {
   state = { adding: false, areasOfOperation: this.props.areasOfOperation };
@@ -65,6 +65,17 @@ class EntryTable extends Component {
     editHandler();
   };
 
+  deleteHandler = ({ name, id }) => {
+    const { updateAreasOfOperation } = this.props;
+
+    const result = window.confirm(`Are you sure you want to delete ${name}?`);
+    if (result === true) {
+      const newAreasOfOperation = updateAreasOfOperation({ id });
+      deleteAreaOfOperation({ id });
+      this.setState({ areasOfOperation: newAreasOfOperation });
+    }
+  };
+
   render() {
     const { editing, editHandler } = this.props;
     const { adding, order, numeral, title, areasOfOperation } = this.state;
@@ -95,7 +106,23 @@ class EntryTable extends Component {
                 name="name"
                 value={name}
                 onChange={e => this.inputHandlerAOO(e, i)}
+                style={{ width: "100%" }}
               />
+            </Table.Cell>
+            <Table.Cell>
+              {" "}
+              <Button
+                style={{
+                  fontSize: "1.2em",
+                  padding: "10px",
+                  width: "75px"
+                }}
+                color="red"
+                icon
+                onClick={() => this.deleteHandler({ id, name })}
+              >
+                <Icon name="trash" position="right" />
+              </Button>
             </Table.Cell>
           </Table.Row>
         );
@@ -150,6 +177,7 @@ class EntryTable extends Component {
               name="title"
               value={title}
               onChange={e => this.inputHandler(e)}
+              style={{ width: "100%" }}
             />
           </Table.Cell>
         </Table.Row>
@@ -175,9 +203,10 @@ class EntryTable extends Component {
         <Table celled>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Order Number</Table.HeaderCell>
-              <Table.HeaderCell>Roman Numeral</Table.HeaderCell>
-              <Table.HeaderCell>Title</Table.HeaderCell>
+              <Table.HeaderCell width="3">Order Number</Table.HeaderCell>
+              <Table.HeaderCell width="3">Roman Numeral</Table.HeaderCell>
+              <Table.HeaderCell width="10">Title</Table.HeaderCell>
+              {editing && <Table.HeaderCell width="2">Delete</Table.HeaderCell>}
             </Table.Row>
           </Table.Header>
 
@@ -187,7 +216,7 @@ class EntryTable extends Component {
           </Table.Body>
           <Table.Footer>
             <Table.Row>
-              <Table.HeaderCell colSpan="3">
+              <Table.HeaderCell colSpan={editing ? "4" : "3"}>
                 <Button
                   style={{
                     fontSize: "1.2em",

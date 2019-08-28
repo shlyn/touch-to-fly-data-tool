@@ -105,6 +105,16 @@ class Entry extends Component {
       });
     }
   };
+
+  updateTasks = ({ id }) => {
+    const { tasks } = this.state;
+    const newTasks = tasks.filter(data => data.id !== id);
+    this.setState({ tasks: newTasks, activeItem: tasks[0].name });
+  };
+
+  setActiveItem = ({ activeItem }) => {
+    this.setState({ activeItem });
+  };
   render() {
     const {
       activeItem,
@@ -156,6 +166,8 @@ class Entry extends Component {
               taskId={id}
               letter={letter}
               getTasks={this.getTasks}
+              updateTasks={this.updateTasks}
+              setActiveItem={this.setActiveItem}
             />
           );
         }

@@ -31,6 +31,13 @@ export default class Entries extends Component {
     return areasOfOperation;
   };
 
+  updateAreasOfOperation = ({ id }) => {
+    const { areasOfOperation } = this.state;
+    const newAreasOfOperation = areasOfOperation.filter(data => data.id !== id);
+    this.setState({ areasOfOperation: newAreasOfOperation });
+    return newAreasOfOperation;
+  };
+
   render() {
     const { areasOfOperation, editing } = this.state;
     console.log(areasOfOperation);
@@ -44,6 +51,7 @@ export default class Entries extends Component {
             updateAOOHandler={this.updateAOOHandler}
             editHandler={this.editHandler}
             getAreasOfOperation={this.getAreasOfOperation}
+            updateAreasOfOperation={this.updateAreasOfOperation}
           />
         )}
       </Container>

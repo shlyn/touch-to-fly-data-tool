@@ -1,24 +1,45 @@
 import React, { Component } from "react";
 import { Button, Segment, Header, Icon, Input, Table } from "semantic-ui-react";
-
+import { deleteResource } from "../../api";
+const uuidv4 = require("uuid/v4");
 export default class ReferenceDispay extends Component {
   state = { adding: false };
 
   addResource = () => {
-    const { resources, resourceName, resourceNumber } = this.props;
+    let { resources, resourceName, resourceNumber } = this.props;
     const { adding } = this.state;
-
+    const id = uuidv4();
+    const resourceId = uuidv4();
     const resource = {
-      resource: { documentName: resourceName, documentNumber: resourceNumber }
+      resource: {
+        documentName: resourceName,
+        documentNumber: resourceNumber,
+        id: resourceId
+      },
+      addition: true,
+      id
     };
+    if (resources) {
+      resources.push(resource);
+    } else {
+      resources = [resource];
+    }
 
-    resources.push(resource);
     this.props.onAddingElement({
       resources,
       resourceName: "",
       resourceNumber: ""
     });
     this.setState({ adding: !adding });
+  };
+
+  deleteHandler = ({ number, id, resource_id }) => {
+    const { updateResources } = this.props;
+    const result = window.confirm(`Are you sure you want to delete ${number}?`);
+    if (result === true) {
+      deleteResource({ id: resource_id });
+      updateResources({ id });
+    }
   };
 
   render() {
@@ -28,41 +49,64 @@ export default class ReferenceDispay extends Component {
       inputHandler,
       resourceName,
       resourceNumber,
-      currentResources
+      currentResources,
+      editResourceHandler
     } = this.props;
     const { adding } = this.state;
     const referenceDisplay =
       resources &&
       resources.map((data, i) => {
+        const { resource, id, resource_id } = data;
         if (editing) {
           return (
             <Table.Row>
               <Table.Cell>
                 <Input
-                  onChange={e => inputHandler(e)}
-                  placeholder={data.resource.documentNumber}
-                  value={currentResources[i].resource.documentNumber}
+                  onChange={e => editResourceHandler({ e, id })}
+                  placeholder={resource.documentNumber}
+                  name="documentNumber"
+                  value={resource.documentNumber}
                   style={{ width: "100%" }}
-                  disabled
                 />
               </Table.Cell>
               <Table.Cell>
                 {" "}
                 <Input
-                  onChange={e => inputHandler(e)}
-                  placeholder={data.resource.documentName}
-                  value={currentResources[i].resource.documentName}
+                  onChange={e => editResourceHandler({ e, id })}
+                  placeholder={resource.documentName}
+                  name="documentName"
+                  value={resource.documentName}
                   style={{ width: "100%" }}
-                  disabled
                 />
+              </Table.Cell>
+              <Table.Cell>
+                {" "}
+                <Button
+                  style={{
+                    fontSize: "1.2em",
+                    padding: "10px",
+                    width: "75px"
+                  }}
+                  color="red"
+                  icon
+                  onClick={() =>
+                    this.deleteHandler({
+                      id,
+                      number: resource.documentNumber,
+                      resource_id
+                    })
+                  }
+                >
+                  <Icon name="trash" position="right" />
+                </Button>
               </Table.Cell>
             </Table.Row>
           );
         } else {
           return (
             <Table.Row>
-              <Table.Cell>{data.resource.documentNumber}</Table.Cell>
-              <Table.Cell>{data.resource.documentName}</Table.Cell>
+              <Table.Cell>{resource.documentNumber}</Table.Cell>
+              <Table.Cell>{resource.documentName}</Table.Cell>
             </Table.Row>
           );
         }

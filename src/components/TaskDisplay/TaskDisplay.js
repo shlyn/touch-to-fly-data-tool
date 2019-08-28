@@ -5,7 +5,14 @@ import ReferenceDisplay from "../ReferenceDisplay/ReferenceDispay";
 import KnowledgeDisplay from "../KnowledgeDisplay/KnowledgeDisplay";
 import RiskManagementDisplay from "../RiskManagementDisplay/RiskManagementDisplay";
 import SkillsDisplay from "../SkillsDisplay/SkillsDisplay";
-import { editTask, createResource, createElement } from "../../api";
+import {
+  editTask,
+  createResource,
+  createElement,
+  deleteTask,
+  editElement,
+  editResource
+} from "../../api";
 export default class TaskDisplay extends Component {
   state = {
     editing: false,
@@ -46,24 +53,29 @@ export default class TaskDisplay extends Component {
 
     resources &&
       resources.map(data => {
-        const { id, resource } = data;
-        if (id === undefined) {
-          createResource({ resource, taskId });
+        const { id, resource, updated, addition, resource_id } = data;
+        if (addition === true && updated !== true) {
+          createResource({ resource, taskId, id });
+        } else if (updated === true) {
+          editResource({ resource_id, resource });
         }
       });
 
     elements &&
       elements.map(data => {
-        const { id, abbreviation_code, text, type } = data;
+        const { id, abbreviation_code, text, type, updated, addition } = data;
         const typeId = type.id;
 
-        if (id === undefined) {
+        if (addition === true && updated !== true) {
           createElement({
             abbreviation_code,
             text,
             element_type_id: typeId,
-            task_id: taskId
+            task_id: taskId,
+            id
           });
+        } else if (updated === true) {
+          editElement({ id, text, abbreviation_code });
         }
       });
   };
@@ -72,12 +84,58 @@ export default class TaskDisplay extends Component {
     this.setState(params);
   };
 
-  cancelHandler = async () => {
-    const { getTasks } = this.props;
+  cancelHandler = async ({ taskName }) => {
+    const { getTasks, setActiveItem } = this.props;
     const { editing } = this.state;
     await getTasks();
     this.setState({ ...this.props, editing: !editing });
+    setActiveItem({ activeItem: taskName });
   };
+
+  deleteHandler = () => {
+    const { updateTasks } = this.props;
+    const { taskId, name } = this.state;
+    const result = window.confirm(`Are you sure you want to delete ${name}?`);
+    if (result === true) {
+      updateTasks({ id: taskId });
+      deleteTask({ id: taskId });
+    }
+  };
+
+  editElementHandler = ({ e, id }) => {
+    const { elements } = this.state;
+    elements.map((data, i) => {
+      if (data.id === id) {
+        elements[i][e.target.name] = e.target.value;
+        elements[i].updated = true;
+        this.setState({ elements });
+      }
+    });
+  };
+
+  editResourceHandler = ({ e, id }) => {
+    const { resources } = this.state;
+    resources.map((data, i) => {
+      if (data.id === id) {
+        resources[i].resource[e.target.name] = e.target.value;
+        resources[i].updated = true;
+        this.setState({ resources });
+      }
+    });
+  };
+
+  updateElements = ({ id }) => {
+    const { elements } = this.state;
+    const newElements = elements.filter(data => data.id !== id);
+    this.setState({ elements: newElements });
+  };
+
+  updateResources = ({ id }) => {
+    const { resources } = this.state;
+    const newResources = resources.filter(data => data.id !== id);
+    this.setState({ resources: newResources });
+  };
+
   render() {
     const {
       editing,
@@ -95,7 +153,7 @@ export default class TaskDisplay extends Component {
       name,
       letter
     } = this.state;
-
+    console.log(letter);
     const headerInputs = (
       <>
         <Container>
@@ -122,7 +180,7 @@ export default class TaskDisplay extends Component {
           color={editing ? "gray" : "green"}
           onClick={() =>
             editing
-              ? this.cancelHandler()
+              ? this.cancelHandler({ taskName: name })
               : this.setState({ editing: !editing })
           }
         >
@@ -151,6 +209,8 @@ export default class TaskDisplay extends Component {
             resourceNumber={resourceNumber}
             currentResources={this.state.resources}
             onAddingElement={this.onAddingElement}
+            editResourceHandler={this.editResourceHandler}
+            updateResources={this.updateResources}
           />
           <Segment color="orange">
             {" "}
@@ -176,6 +236,8 @@ export default class TaskDisplay extends Component {
             inputHandler={this.inputHandler}
             knowledge={knowledge}
             onAddingElement={this.onAddingElement}
+            editElementHandler={this.editElementHandler}
+            updateElements={this.updateElements}
           />
           <RiskManagementDisplay
             riskManagementDescription={riskManagementDescription}
@@ -184,6 +246,8 @@ export default class TaskDisplay extends Component {
             inputHandler={this.inputHandler}
             riskManagement={riskManagement}
             onAddingElement={this.onAddingElement}
+            editElementHandler={this.editElementHandler}
+            updateElements={this.updateElements}
           />
           <SkillsDisplay
             skill={skill}
@@ -192,9 +256,15 @@ export default class TaskDisplay extends Component {
             editing={editing}
             inputHandler={this.inputHandler}
             onAddingElement={this.onAddingElement}
+            editElementHandler={this.editElementHandler}
+            updateElements={this.updateElements}
           />
         </Segment.Group>
-        <Button color="red" style={{ marginBottom: "20px" }} disabled>
+        <Button
+          color="red"
+          style={{ marginBottom: "20px" }}
+          onClick={() => this.deleteHandler()}
+        >
           Delete
         </Button>
       </TaskContainer>

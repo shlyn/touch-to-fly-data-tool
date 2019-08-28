@@ -49,6 +49,7 @@ export async function getTasksById({ id }) {
           resource {
             documentName
             documentNumber
+            id
       }
     }    elements {
           id
@@ -141,7 +142,8 @@ export async function createElement({
   abbreviation_code,
   element_type_id,
   task_id,
-  text
+  text,
+  id
 }) {
   const date = new Date();
   const dateFormatted = date.toISOString();
@@ -159,7 +161,7 @@ export async function createElement({
     abbreviation_code,
     created_at: dateFormatted,
     element_type_id,
-    id: uuidv4(),
+    id,
     task_id,
     text
   };
@@ -256,14 +258,123 @@ mutation ($id: uuid!, $name: String!, $numeral: String!, $order: Int!, $updated_
   return results;
 }
 
-// update element
+export async function editElement({ id, text, abbreviation_code }) {
+  const date = new Date();
+  const dateFormatted = date.toISOString();
 
-// update resource
+  const post = `
+mutation ($id: uuid!, $updated_at: timestamptz!, $text: String!, $abbreviation_code: String!){
+  update_element(where: { id: { _eq: $id } }, _set: { updated_at: $updated_at, text: $text, abbreviation_code: $abbreviation_code }) {
+    affected_rows
+    returning {
+      id
+    }
+  }
+}
+`;
 
-// remove element
+  const variables = {
+    id,
+    updated_at: dateFormatted,
+    text,
+    abbreviation_code
+  };
 
-// remove resource
+  const results = await client.request(post, variables);
+  return results;
+}
 
-// remove AOP
+export async function editResource({ resource_id, resource }) {
+  const date = new Date();
+  const dateFormatted = date.toISOString();
+  const { documentName, documentNumber } = resource;
 
-// remove task
+  const post = `
+mutation ($id: uuid!, $updated_at: timestamptz!, $documentName: String!, $documentNumber: String!){
+  update_resources(where: { id: { _eq: $id } }, _set: { updated_at: $updated_at, documentName: $documentName, documentNumber: $documentNumber }) {
+    affected_rows
+    returning {
+      id
+    }
+  }
+}
+`;
+
+  const variables = {
+    id: resource_id,
+    updated_at: dateFormatted,
+    documentName,
+    documentNumber
+  };
+
+  const results = await client.request(post, variables);
+  return results;
+}
+
+export async function deleteAreaOfOperation({ id }) {
+  const mutation = `
+  mutation ($id: uuid!){
+  delete_area_of_operation(where: { id: { _eq: $id } }) {
+    affected_rows
+  }
+}
+
+`;
+  const variables = {
+    id
+  };
+
+  const results = await client.request(mutation, variables);
+  return results;
+}
+
+export async function deleteElement({ id }) {
+  const mutation = `
+  mutation ($id: uuid!){
+  delete_element(where: { id: { _eq: $id } }) {
+    affected_rows
+  }
+}
+
+`;
+  const variables = {
+    id
+  };
+
+  const results = await client.request(mutation, variables);
+  return results;
+}
+
+export async function deleteResource({ id }) {
+  const mutation = `
+  mutation ($id: uuid!){
+  delete_resources(where: { id: { _eq: $id } }) {
+    affected_rows
+  }
+}
+
+`;
+  const variables = {
+    id
+  };
+
+  const results = await client.request(mutation, variables);
+  return results;
+}
+
+export async function deleteTask({ id }) {
+  const mutation = `
+  mutation ($id: uuid!){
+  delete_task(where: { id: { _eq: $id } }) {
+    affected_rows
+  }
+}
+
+`;
+  const variables = {
+    id
+  };
+
+  const results = await client.request(mutation, variables);
+  return results;
+}
