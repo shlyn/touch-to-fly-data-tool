@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Menu, Icon, Header, Input, Dropdown } from "semantic-ui-react";
 import styled from "styled-components";
-import { getTasksById, createNewTask, editTask } from "../../api/index";
+import { getTasksById, createNewTask } from "../../api/Tasks/tasks";
 import TaskDisplay from "../TaskDisplay/TaskDisplay";
 import { getTaskId } from "../../redux/tasks/actions";
 import { connect } from "react-redux";
@@ -136,9 +136,10 @@ class Entry extends Component {
     const taskMenu =
       tasks &&
       tasks.map(data => {
-        const { name, letter } = data;
+        const { name, letter, id } = data;
         return (
           <Menu.Item
+            key={id}
             name={name}
             active={activeItem === name}
             onClick={this.handleItemClick}
@@ -164,6 +165,7 @@ class Entry extends Component {
         if (activeItem === name) {
           return (
             <TaskDisplay
+              key={id}
               resources={resources}
               name={name}
               knowledgeDescription={knowledge_description}
@@ -178,6 +180,8 @@ class Entry extends Component {
               setActiveItem={this.setActiveItem}
             />
           );
+        } else {
+          return null;
         }
       });
 

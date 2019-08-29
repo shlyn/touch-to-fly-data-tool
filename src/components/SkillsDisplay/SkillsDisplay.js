@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { skillsId } from "../../utils/data";
 import { Button, Segment, Header, Table, Icon, Input } from "semantic-ui-react";
-import { deleteElement } from "../../api";
+import { deleteElement } from "../../api/Elements/elements";
 const uuidv4 = require("uuid/v4");
 export default class SkillsDisplay extends Component {
   state = { adding: false, newCode: "", newText: "" };
@@ -32,7 +32,6 @@ export default class SkillsDisplay extends Component {
   inputHandler = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
-
 
   deleteHandler = ({ abbreviation_code, id }) => {
     const { updateElements } = this.props;
@@ -100,13 +99,14 @@ export default class SkillsDisplay extends Component {
             );
           } else {
             return (
-              <Table.Row>
+              <Table.Row key={id}>
                 <Table.Cell>{abbreviation_code}</Table.Cell>
                 <Table.Cell>{text}</Table.Cell>
               </Table.Row>
             );
           }
         }
+        return null;
       });
 
     const addingDisplay = (
@@ -155,7 +155,7 @@ export default class SkillsDisplay extends Component {
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {skillsDisplay}{" "}
+                  {skillsDisplay}
                   {editing && !adding && (
                     <Button
                       style={{ background: "transparent" }}

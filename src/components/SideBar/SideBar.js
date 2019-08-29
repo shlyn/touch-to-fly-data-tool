@@ -16,7 +16,7 @@ export default class SideBar extends Component {
           width="thin"
         >
           <Link to="/entries">
-            <Menu.Item as="a">
+            <Menu.Item>
               <Icon name="home" />
               Areas Of Operation
             </Menu.Item>

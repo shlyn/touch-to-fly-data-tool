@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Segment, Header, Table, Input, Icon } from "semantic-ui-react";
 import { knowledgeId } from "../../utils/data";
-import { deleteElement } from "../../api";
+import { deleteElement } from "../../api/Elements/elements";
 const uuidv4 = require("uuid/v4");
 export default class KnowledgeDisplay extends Component {
   state = { adding: false, newCode: "", newText: "" };
@@ -101,13 +101,14 @@ export default class KnowledgeDisplay extends Component {
             );
           } else {
             return (
-              <Table.Row>
+              <Table.Row key={id}>
                 <Table.Cell>{abbreviation_code}</Table.Cell>
                 <Table.Cell>{text}</Table.Cell>
               </Table.Row>
             );
           }
         }
+        return null;
       });
 
     const addingDisplay = (
@@ -167,7 +168,7 @@ export default class KnowledgeDisplay extends Component {
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {knowledgeDisplay}{" "}
+                  {knowledgeDisplay}
                   {editing && !adding && (
                     <Button
                       style={{ background: "transparent" }}

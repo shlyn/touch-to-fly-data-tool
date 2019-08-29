@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Segment, Header, Table, Icon, Input } from "semantic-ui-react";
 import { riskManagementId } from "../../utils/data";
-import { deleteElement } from "../../api";
+import { deleteElement } from "../../api/Elements/elements";
 const uuidv4 = require("uuid/v4");
 
 export default class RiskManagementDisplay extends Component {
@@ -100,13 +100,14 @@ export default class RiskManagementDisplay extends Component {
             );
           } else {
             return (
-              <Table.Row>
+              <Table.Row key={id}>
                 <Table.Cell>{abbreviation_code}</Table.Cell>
                 <Table.Cell>{text}</Table.Cell>
               </Table.Row>
             );
           }
         }
+        return null;
       });
 
     const addingDisplay = (

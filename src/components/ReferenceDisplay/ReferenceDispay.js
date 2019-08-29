@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Segment, Header, Icon, Input, Table } from "semantic-ui-react";
-import { deleteResource } from "../../api";
+import { deleteResource } from "../../api/Resources/resources";
 const uuidv4 = require("uuid/v4");
 export default class ReferenceDispay extends Component {
   state = { adding: false };
@@ -49,7 +49,6 @@ export default class ReferenceDispay extends Component {
       inputHandler,
       resourceName,
       resourceNumber,
-      currentResources,
       editResourceHandler
     } = this.props;
     const { adding } = this.state;
@@ -107,7 +106,7 @@ export default class ReferenceDispay extends Component {
           );
         } else {
           return (
-            <Table.Row>
+            <Table.Row key={resource.id}>
               <Table.Cell>{resource.documentNumber}</Table.Cell>
               <Table.Cell>{resource.documentName}</Table.Cell>
             </Table.Row>
@@ -127,45 +126,47 @@ export default class ReferenceDispay extends Component {
                   <Table.HeaderCell>Resource Name</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
-              {referenceDisplay}
-              {editing && !adding && (
-                <Button
-                  style={{ background: "transparent" }}
-                  onClick={() => this.setState({ adding: !adding })}
-                >
-                  <Icon name="add" />
-                </Button>
-              )}
-              {adding && editing && (
-                <>
-                  <Table.Row>
-                    <Table.Cell>
-                      <Input
-                        placeholder="Document Name"
-                        name="resourceName"
-                        value={resourceName}
-                        onChange={e => inputHandler(e)}
-                        style={{ width: "100%" }}
-                      />
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Input
-                        placeholder="Document Number"
-                        name="resourceNumber"
-                        value={resourceNumber}
-                        onChange={e => inputHandler(e)}
-                        style={{ width: "100%" }}
-                      />
-                    </Table.Cell>
-                  </Table.Row>
+              <Table.Body>
+                {referenceDisplay}
+                {editing && !adding && (
                   <Button
-                    style={{ background: "transparent", color: "green" }}
-                    onClick={() => this.addResource()}
+                    style={{ background: "transparent" }}
+                    onClick={() => this.setState({ adding: !adding })}
                   >
                     <Icon name="add" />
                   </Button>
-                </>
-              )}
+                )}
+                {adding && editing && (
+                  <>
+                    <Table.Row>
+                      <Table.Cell>
+                        <Input
+                          placeholder="Document Name"
+                          name="resourceName"
+                          value={resourceName}
+                          onChange={e => inputHandler(e)}
+                          style={{ width: "100%" }}
+                        />
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Input
+                          placeholder="Document Number"
+                          name="resourceNumber"
+                          value={resourceNumber}
+                          onChange={e => inputHandler(e)}
+                          style={{ width: "100%" }}
+                        />
+                      </Table.Cell>
+                    </Table.Row>
+                    <Button
+                      style={{ background: "transparent", color: "green" }}
+                      onClick={() => this.addResource()}
+                    >
+                      <Icon name="add" />
+                    </Button>
+                  </>
+                )}
+              </Table.Body>
             </Table>
           </Segment.Group>
         </Segment>

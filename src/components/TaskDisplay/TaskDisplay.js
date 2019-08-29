@@ -5,14 +5,9 @@ import ReferenceDisplay from "../ReferenceDisplay/ReferenceDispay";
 import KnowledgeDisplay from "../KnowledgeDisplay/KnowledgeDisplay";
 import RiskManagementDisplay from "../RiskManagementDisplay/RiskManagementDisplay";
 import SkillsDisplay from "../SkillsDisplay/SkillsDisplay";
-import {
-  editTask,
-  createResource,
-  createElement,
-  deleteTask,
-  editElement,
-  editResource
-} from "../../api";
+import { editTask, deleteTask } from "../../api/Tasks/tasks";
+import { createResource, editResource } from "../../api/Resources/resources";
+import { createElement, editElement } from "../../api/Elements/elements";
 export default class TaskDisplay extends Component {
   state = {
     editing: false,
@@ -59,6 +54,7 @@ export default class TaskDisplay extends Component {
         } else if (updated === true) {
           editResource({ resource_id, resource });
         }
+        return null;
       });
 
     elements &&
@@ -77,6 +73,7 @@ export default class TaskDisplay extends Component {
         } else if (updated === true) {
           editElement({ id, text, abbreviation_code });
         }
+        return null;
       });
   };
 
@@ -100,6 +97,7 @@ export default class TaskDisplay extends Component {
       updateTasks({ id: taskId });
       deleteTask({ id: taskId });
     }
+    return null;
   };
 
   editElementHandler = ({ e, id }) => {
@@ -110,7 +108,9 @@ export default class TaskDisplay extends Component {
         elements[i].updated = true;
         this.setState({ elements });
       }
+      return null;
     });
+    return null;
   };
 
   editResourceHandler = ({ e, id }) => {
@@ -121,6 +121,7 @@ export default class TaskDisplay extends Component {
         resources[i].updated = true;
         this.setState({ resources });
       }
+      return null;
     });
   };
 

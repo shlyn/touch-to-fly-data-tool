@@ -1,4 +1,4 @@
 import taskReducer from "./tasks";
-import { createStore, combineReducers } from "redux";
+import { createStore } from "redux";
 
 export default createStore(taskReducer, {});

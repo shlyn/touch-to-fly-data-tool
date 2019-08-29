@@ -3,7 +3,10 @@ import { Icon, Table, Button, Input } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { setTaskId, setTaskName } from "../../redux/tasks/actions";
 import { connect } from "react-redux";
-import { createAreaOfOperation, deleteAreaOfOperation } from "../../api";
+import {
+  createAreaOfOperation,
+  deleteAreaOfOperation
+} from "../../api/AreasOfOperation/areasOfOperation";
 
 class EntryTable extends Component {
   state = {
@@ -53,6 +56,7 @@ class EntryTable extends Component {
       if (updated === true) {
         updateAOOHandler({ id, order, numeral, name });
       }
+      return null;
     });
 
     editHandler();
@@ -78,8 +82,6 @@ class EntryTable extends Component {
       this.setState({ areasOfOperation: newAreasOfOperation });
     }
   };
-
-  setAOODisplay = ({ i }) => {};
 
   render() {
     const { editing, editHandler } = this.props;
@@ -133,7 +135,7 @@ class EntryTable extends Component {
         );
       } else {
         return (
-          <Table.Row>
+          <Table.Row key={id}>
             <Table.Cell selectable>
               {" "}
               <Link to="/entry" onClick={() => this.setTask({ id, name })}>

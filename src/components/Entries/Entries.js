@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { Header } from "semantic-ui-react";
-import { getAllAreasOfOperation, editAreaOfOperation } from "../../api/index";
+import {
+  getAllAreasOfOperation,
+  editAreaOfOperation
+} from "../../api/AreasOfOperation/areasOfOperation";
 import EntryTable from "../EntryTable/EntryTable";
 
 export default class Entries extends Component {
