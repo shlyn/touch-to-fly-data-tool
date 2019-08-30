@@ -8,6 +8,7 @@ import SkillsDisplay from "../SkillsDisplay/SkillsDisplay";
 import { editTask, deleteTask } from "../../api/Tasks/tasks";
 import { createResource, editResource } from "../../api/Resources/resources";
 import { createElement, editElement } from "../../api/Elements/elements";
+
 export default class TaskDisplay extends Component {
   state = {
     editing: false,
@@ -83,9 +84,13 @@ export default class TaskDisplay extends Component {
 
   cancelHandler = async ({ taskName }) => {
     const { getTasks, setActiveItem } = this.props;
+
     const { editing } = this.state;
     await getTasks();
-    this.setState({ ...this.props, editing: !editing });
+    this.setState({
+      ...this.props,
+      editing: !editing
+    });
     setActiveItem({ activeItem: taskName });
   };
 
@@ -154,23 +159,22 @@ export default class TaskDisplay extends Component {
       name,
       letter
     } = this.state;
-    console.log(letter);
+
     const headerInputs = (
       <>
         <Container>
-          <Input
-            placeholder={letter}
-            name="letter"
-            value={letter}
-            onChange={e => this.inputHandler(e)}
-            style={{ width: "5%" }}
-          />
           <Input
             placeholder={name}
             name="name"
             value={name}
             onChange={e => this.inputHandler(e)}
-            style={{ marginLeft: "5px" }}
+          />
+          <Input
+            placeholder={letter}
+            name="letter"
+            value={letter}
+            onChange={e => this.inputHandler(e)}
+            style={{ width: "10%", marginLeft: "5px" }}
           />
         </Container>
       </>
@@ -178,7 +182,7 @@ export default class TaskDisplay extends Component {
     return (
       <TaskContainer>
         <Button
-          color={editing ? "gray" : "green"}
+          color={editing ? "grey" : "green"}
           onClick={() =>
             editing
               ? this.cancelHandler({ taskName: name })
@@ -214,7 +218,6 @@ export default class TaskDisplay extends Component {
             updateResources={this.updateResources}
           />
           <Segment color="orange">
-            {" "}
             <Header>Objective</Header>
             <Segment>
               {editing ? (

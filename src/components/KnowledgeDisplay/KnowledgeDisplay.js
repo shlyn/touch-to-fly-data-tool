@@ -62,7 +62,7 @@ export default class KnowledgeDisplay extends Component {
         if (type.id === knowledgeId) {
           if (editing) {
             return (
-              <Table.Row>
+              <Table.Row key={id + abbreviation_code}>
                 <Table.Cell>
                   <Input
                     placeholder={abbreviation_code}
@@ -169,14 +169,16 @@ export default class KnowledgeDisplay extends Component {
                 </Table.Header>
                 <Table.Body>
                   {knowledgeDisplay}
-                  {editing && !adding && (
-                    <Button
-                      style={{ background: "transparent" }}
-                      onClick={() => this.setState({ adding: !adding })}
-                    >
-                      <Icon name="add" />
-                    </Button>
-                  )}
+                  <Table.Row>
+                    {editing && !adding && (
+                      <Button
+                        style={{ background: "transparent" }}
+                        onClick={() => this.setState({ adding: !adding })}
+                      >
+                        <Icon name="add" />
+                      </Button>
+                    )}
+                  </Table.Row>
                   {adding && editing && addingDisplay}
                 </Table.Body>
               </Table>

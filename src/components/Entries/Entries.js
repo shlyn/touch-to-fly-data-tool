@@ -43,7 +43,7 @@ export default class Entries extends Component {
 
   render() {
     const { areasOfOperation, editing } = this.state;
-    console.log(areasOfOperation);
+
     return (
       <Container>
         <Header as="h3">Current Areas Of Operation</Header>

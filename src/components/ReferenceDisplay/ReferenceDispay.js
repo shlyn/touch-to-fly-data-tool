@@ -58,7 +58,7 @@ export default class ReferenceDispay extends Component {
         const { resource, id, resource_id } = data;
         if (editing) {
           return (
-            <Table.Row>
+            <Table.Row key={id}>
               <Table.Cell>
                 <Input
                   onChange={e => editResourceHandler({ e, id })}
@@ -70,7 +70,6 @@ export default class ReferenceDispay extends Component {
                 />
               </Table.Cell>
               <Table.Cell>
-                {" "}
                 <Input
                   onChange={e => editResourceHandler({ e, id })}
                   placeholder={resource.documentName}
@@ -81,7 +80,6 @@ export default class ReferenceDispay extends Component {
                 />
               </Table.Cell>
               <Table.Cell>
-                {" "}
                 <Button
                   style={{
                     fontSize: "1.2em",

@@ -61,7 +61,7 @@ export default class RiskManagementDisplay extends Component {
         if (type.id === riskManagementId) {
           if (editing) {
             return (
-              <Table.Row>
+              <Table.Row key={id}>
                 <Table.Cell>
                   <Input
                     placeholder={abbreviation_code}
@@ -157,14 +157,16 @@ export default class RiskManagementDisplay extends Component {
                 </Table.Header>
                 <Table.Body>
                   {riskManagementDisplay}
-                  {editing && !adding && (
-                    <Button
-                      style={{ background: "transparent" }}
-                      onClick={() => this.setState({ adding: !adding })}
-                    >
-                      <Icon name="add" />
-                    </Button>
-                  )}
+                  <Table.Row>
+                    {editing && !adding && (
+                      <Button
+                        style={{ background: "transparent" }}
+                        onClick={() => this.setState({ adding: !adding })}
+                      >
+                        <Icon name="add" />
+                      </Button>
+                    )}
+                  </Table.Row>
                   {adding && editing && addingDisplay}
                 </Table.Body>
               </Table>

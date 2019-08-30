@@ -6,6 +6,7 @@ import TaskDisplay from "../TaskDisplay/TaskDisplay";
 import { getTaskId } from "../../redux/tasks/actions";
 import { connect } from "react-redux";
 import { letterOptions } from "../../utils/data";
+import { sortTasks } from "../../utils/helpers";
 
 class Entry extends Component {
   state = {
@@ -26,17 +27,8 @@ class Entry extends Component {
     }
 
     const results = await getTasksById({ id });
-    const tasks =
-      results.task.length > 0 &&
-      results.task.sort((a, b) => {
-        if (a.letter < b.letter) {
-          return -1;
-        }
-        if (a.letter > b.letter) {
-          return 1;
-        }
-        return 0;
-      });
+    const tasks = sortTasks({ tasks: results.task });
+
     if (tasks.length > 0) {
       this.setState({
         tasks: tasks,
@@ -71,7 +63,13 @@ class Entry extends Component {
     });
     const task = { name: taskName, letter: taskLetter };
     tasks.push(task);
-    this.setState({ tasks, activeItem: taskName, taskInput: false });
+    this.setState({
+      tasks,
+      activeItem: taskName,
+      taskInput: false,
+      taskName: "",
+      taskLetter: ""
+    });
   };
 
   addTaskHandler = () => {
@@ -121,7 +119,8 @@ class Entry extends Component {
   };
 
   setActiveItem = ({ activeItem }) => {
-    this.setState({ activeItem });
+    const { tasks } = this.state;
+    this.setState({ activeItem, tasks: sortTasks({ tasks }) });
   };
   render() {
     const {
@@ -139,7 +138,7 @@ class Entry extends Component {
         const { name, letter, id } = data;
         return (
           <Menu.Item
-            key={id}
+            key={id + name}
             name={name}
             active={activeItem === name}
             onClick={this.handleItemClick}
@@ -221,7 +220,7 @@ class Entry extends Component {
               <Button
                 style={{
                   background: "transparent",
-                  color: `${taskInput && "green"}`
+                  color: `${taskInput ? "green" : "grey"}`
                 }}
                 onClick={() =>
                   taskInput ? this.submitHandler() : this.addTaskHandler()

@@ -60,7 +60,7 @@ export default class SkillsDisplay extends Component {
         if (type.id === skillsId) {
           if (editing) {
             return (
-              <Table.Row>
+              <Table.Row key={id}>
                 <Table.Cell>
                   <Input
                     placeholder={abbreviation_code}
@@ -154,8 +154,8 @@ export default class SkillsDisplay extends Component {
                     {editing && <Table.HeaderCell>Delete</Table.HeaderCell>}
                   </Table.Row>
                 </Table.Header>
-                <Table.Body>
-                  {skillsDisplay}
+                <Table.Body>{skillsDisplay}</Table.Body>
+                <Table.Footer>
                   {editing && !adding && (
                     <Button
                       style={{ background: "transparent" }}
@@ -165,7 +165,7 @@ export default class SkillsDisplay extends Component {
                     </Button>
                   )}
                   {adding && editing && addingDisplay}
-                </Table.Body>
+                </Table.Footer>
               </Table>
             </Segment>
           </Segment.Group>
