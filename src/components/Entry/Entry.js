@@ -171,7 +171,7 @@ class Entry extends Component {
                 taskName={taskName}
                 dropdownHandler={this.dropdownHandler}
                 inputHandler={this.inputHandler}
-                setTaskHandler={this.submitHandler}
+                setTaskHandler={this.setTaskHandler}
               />
             )}
             <Menu.Menu position="right">
