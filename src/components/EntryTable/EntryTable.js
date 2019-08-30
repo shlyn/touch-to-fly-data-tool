@@ -29,7 +29,6 @@ class EntryTable extends Component {
     const { areasOfOperation } = this.state;
     areasOfOperation[i][e.target.name] = e.target.value;
     areasOfOperation[i].updated = true;
-    console.log(areasOfOperation);
     this.setState({ areasOfOperation });
   };
 
@@ -49,7 +48,7 @@ class EntryTable extends Component {
 
   updateHandler = () => {
     const { areasOfOperation } = this.state;
-    const { updateAOOHandler, editHandler } = this.props;
+    const { updateAOOHandler, successHandler } = this.props;
 
     areasOfOperation.map(data => {
       const { updated, id, order, numeral, name } = data;
@@ -58,8 +57,7 @@ class EntryTable extends Component {
       }
       return null;
     });
-
-    editHandler();
+    successHandler();
   };
 
   cancelHandler = async () => {
@@ -90,7 +88,7 @@ class EntryTable extends Component {
     const rows = areasOfOperation.map(({ name, numeral, order, id }, i) => {
       if (editing) {
         return (
-          <Table.Row>
+          <Table.Row key={id + name}>
             <Table.Cell>
               <Input
                 placeholder={order}
@@ -194,10 +192,10 @@ class EntryTable extends Component {
       <>
         <Button
           disabled={adding}
-          color={editing ? "gray" : "green"}
+          color={editing ? "grey" : "green"}
           onClick={() => (editing ? this.cancelHandler() : editHandler())}
         >
-          {editing ? "Cancel" : "Edit"}
+          {editing ? "Done" : "Edit"}
         </Button>
         {editing && (
           <Button
@@ -227,10 +225,9 @@ class EntryTable extends Component {
               <Table.HeaderCell colSpan={editing ? "4" : "3"}>
                 {adding && (
                   <Button
-                    color="gray"
+                    color="grey"
                     onClick={() => this.setState({ adding: false })}
                     style={{
-                      fontSize: "1.2em",
                       padding: "10px",
                       width: "100px"
                     }}
@@ -240,7 +237,6 @@ class EntryTable extends Component {
                 )}
                 <Button
                   style={{
-                    fontSize: "1.2em",
                     padding: "10px",
                     width: "100px"
                   }}

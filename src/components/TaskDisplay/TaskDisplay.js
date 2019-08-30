@@ -5,16 +5,22 @@ import ReferenceDisplay from "../ReferenceDisplay/ReferenceDispay";
 import KnowledgeDisplay from "../KnowledgeDisplay/KnowledgeDisplay";
 import RiskManagementDisplay from "../RiskManagementDisplay/RiskManagementDisplay";
 import SkillsDisplay from "../SkillsDisplay/SkillsDisplay";
+import HeaderInputs from "../Simple/HeaderInputs";
+import SuccessMessage from "../Simple/SuccessMessage";
 import { editTask, deleteTask } from "../../api/Tasks/tasks";
 import { createResource, editResource } from "../../api/Resources/resources";
 import { createElement, editElement } from "../../api/Elements/elements";
+import { updateTask } from "../../utils/helpers";
 
 export default class TaskDisplay extends Component {
   state = {
     editing: false,
     ...this.props,
-    originalElements: this.props.elements,
-    originalResources: this.props.resources
+    success: false
+  };
+
+  stateChanges = ({ changes }) => {
+    this.setState(changes);
   };
 
   inputHandler = e => {
@@ -22,60 +28,15 @@ export default class TaskDisplay extends Component {
   };
 
   submitHandler = () => {
-    const {
-      editing,
-      taskId,
-      knowledgeDescription,
-      objective,
-      riskManagementDescription,
-      skillsDescription,
-      elements,
-      resources,
-      name,
-      letter
-    } = this.state;
-
-    this.setState({ editing: !editing });
-
-    editTask({
-      taskId,
-      knowledgeDescription,
-      objective,
-      riskManagementDescription,
-      skillsDescription,
-      name,
-      letter
+    updateTask({
+      state: this.state,
+      editTask,
+      stateChanges: this.stateChanges,
+      createResource,
+      editResource,
+      createElement,
+      editElement
     });
-
-    resources &&
-      resources.map(data => {
-        const { id, resource, updated, addition, resource_id } = data;
-        if (addition === true && updated !== true) {
-          createResource({ resource, taskId, id });
-        } else if (updated === true) {
-          editResource({ resource_id, resource });
-        }
-        return null;
-      });
-
-    elements &&
-      elements.map(data => {
-        const { id, abbreviation_code, text, type, updated, addition } = data;
-        const typeId = type.id;
-
-        if (addition === true && updated !== true) {
-          createElement({
-            abbreviation_code,
-            text,
-            element_type_id: typeId,
-            task_id: taskId,
-            id
-          });
-        } else if (updated === true) {
-          editElement({ id, text, abbreviation_code });
-        }
-        return null;
-      });
   };
 
   onAddingElement = params => {
@@ -83,15 +44,20 @@ export default class TaskDisplay extends Component {
   };
 
   cancelHandler = async ({ taskName }) => {
-    const { getTasks, setActiveItem } = this.props;
+    const { setActiveItem } = this.props;
 
+    await this.resetTasks();
+    setActiveItem({ activeItem: taskName });
+  };
+
+  resetTasks = async () => {
+    const { getTasks } = this.props;
     const { editing } = this.state;
     await getTasks();
     this.setState({
       ...this.props,
       editing: !editing
     });
-    setActiveItem({ activeItem: taskName });
   };
 
   deleteHandler = () => {
@@ -157,28 +123,10 @@ export default class TaskDisplay extends Component {
       resources,
       elements,
       name,
-      letter
+      letter,
+      success
     } = this.state;
 
-    const headerInputs = (
-      <>
-        <Container>
-          <Input
-            placeholder={name}
-            name="name"
-            value={name}
-            onChange={e => this.inputHandler(e)}
-          />
-          <Input
-            placeholder={letter}
-            name="letter"
-            value={letter}
-            onChange={e => this.inputHandler(e)}
-            style={{ width: "10%", marginLeft: "5px" }}
-          />
-        </Container>
-      </>
-    );
     return (
       <TaskContainer>
         <Button
@@ -189,7 +137,7 @@ export default class TaskDisplay extends Component {
               : this.setState({ editing: !editing })
           }
         >
-          {editing ? "Cancel" : "Edit"}
+          {editing ? "Done" : "Edit"}
         </Button>
         {editing && (
           <Button
@@ -200,8 +148,13 @@ export default class TaskDisplay extends Component {
             Submit
           </Button>
         )}
+        <SuccessMessage success={success} />
         {editing ? (
-          headerInputs
+          <HeaderInputs
+            name={name}
+            letter={letter}
+            inputHandler={this.inputHandler}
+          />
         ) : (
           <Header as="h3">{`${letter}.   ${name}`}</Header>
         )}
@@ -295,8 +248,4 @@ const TaskContainer = styled.div`
     width: 60%;
     margin-left: 200px;
   }
-`;
-
-const Container = styled.div`
-  padding-top: 10px;
 `;

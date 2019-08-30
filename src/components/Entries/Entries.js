@@ -6,9 +6,11 @@ import {
   editAreaOfOperation
 } from "../../api/AreasOfOperation/areasOfOperation";
 import EntryTable from "../EntryTable/EntryTable";
+import SuccessMessage from "../Simple/SuccessMessage";
 
 export default class Entries extends Component {
-  state = { editing: false };
+  state = { editing: false, success: false };
+
   async componentDidMount() {
     const results = await getAllAreasOfOperation();
     const areasOfOperation = results.area_of_operation.sort(
@@ -41,12 +43,18 @@ export default class Entries extends Component {
     return newAreasOfOperation;
   };
 
+  successHandler = () => {
+    this.setState({ success: true });
+    setTimeout(() => this.setState({ success: false }), 2000);
+  };
+
   render() {
-    const { areasOfOperation, editing } = this.state;
+    const { areasOfOperation, editing, success } = this.state;
 
     return (
       <Container>
         <Header as="h3">Current Areas Of Operation</Header>
+        <SuccessMessage success={success} />
         {areasOfOperation && (
           <EntryTable
             areasOfOperation={areasOfOperation}
@@ -55,6 +63,7 @@ export default class Entries extends Component {
             editHandler={this.editHandler}
             getAreasOfOperation={this.getAreasOfOperation}
             updateAreasOfOperation={this.updateAreasOfOperation}
+            successHandler={this.successHandler}
           />
         )}
       </Container>

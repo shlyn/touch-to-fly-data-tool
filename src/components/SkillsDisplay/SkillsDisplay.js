@@ -1,32 +1,32 @@
 import React, { Component } from "react";
 import { skillsId } from "../../utils/data";
-import { Button, Segment, Header, Table, Icon, Input } from "semantic-ui-react";
+import { Segment, Header, Table, Input } from "semantic-ui-react";
 import { deleteElement } from "../../api/Elements/elements";
-const uuidv4 = require("uuid/v4");
+import AddingDisplay from "../Simple/AddingDisplay";
+import ElementsDisplay from "../Simple/ElementsDisplay";
+import AddButton from "../Simple/AddButton";
+import { addNewElement } from "../../utils/helpers";
+
 export default class SkillsDisplay extends Component {
   state = { adding: false, newCode: "", newText: "" };
 
+  stateChanges = ({ changes }) => {
+    this.setState(changes);
+  };
+
   addElement = () => {
-    const { elements } = this.props;
-    const { newCode, newText } = this.state;
-    const { adding } = this.state;
-    const id = uuidv4();
-    const element = {
-      abbreviation_code: newCode,
-      text: newText,
-      type: { id: skillsId },
-      id,
-      addition: true
-    };
+    const { elements, onAddingElement } = this.props;
+    const { newCode, newText, adding } = this.state;
 
-    elements.push(element);
-
-    this.props.onAddingElement({
+    addNewElement({
       elements,
-      abbreviation_code: "",
-      text: ""
+      newCode,
+      newText,
+      adding,
+      elementId: skillsId,
+      stateChanges: this.stateChanges,
+      onAddingElement
     });
-    this.setState({ adding: !adding });
   };
 
   inputHandler = e => {
@@ -44,109 +44,42 @@ export default class SkillsDisplay extends Component {
     }
   };
 
+  addingStateHandler = () => {
+    const { adding } = this.state;
+    this.setState({ adding: !adding });
+  };
+
   render() {
     const {
       elements,
       skillsDescription,
       editing,
-      editElementHandler
+      editElementHandler,
+      inputHandler
     } = this.props;
     const { adding, newCode, newText } = this.state;
-
-    const skillsDisplay =
-      elements &&
-      elements.map(data => {
-        const { text, abbreviation_code, type, id } = data;
-        if (type.id === skillsId) {
-          if (editing) {
-            return (
-              <Table.Row key={id}>
-                <Table.Cell>
-                  <Input
-                    placeholder={abbreviation_code}
-                    value={abbreviation_code}
-                    name="abbreviation_code"
-                    onChange={e => editElementHandler({ e, id })}
-                  />
-                </Table.Cell>
-                <Table.Cell>
-                  <Input
-                    placeholder={text}
-                    value={text}
-                    name="text"
-                    style={{ width: "100%" }}
-                    onChange={e => editElementHandler({ e, id })}
-                  />
-                </Table.Cell>
-                <Table.Cell>
-                  {" "}
-                  <Button
-                    style={{
-                      fontSize: "1.2em",
-                      padding: "10px",
-                      width: "75px"
-                    }}
-                    color="red"
-                    icon
-                    onClick={() =>
-                      this.deleteHandler({ id, abbreviation_code })
-                    }
-                  >
-                    <Icon name="trash" position="right" />
-                  </Button>
-                </Table.Cell>
-              </Table.Row>
-            );
-          } else {
-            return (
-              <Table.Row key={id}>
-                <Table.Cell>{abbreviation_code}</Table.Cell>
-                <Table.Cell>{text}</Table.Cell>
-              </Table.Row>
-            );
-          }
-        }
-        return null;
-      });
-
-    const addingDisplay = (
-      <>
-        <Table.Row>
-          <Table.Cell>
-            <Input
-              placeholder={"Code"}
-              value={newCode}
-              name="newCode"
-              onChange={e => this.inputHandler(e)}
-            />
-          </Table.Cell>
-          <Table.Cell>
-            <Input
-              placeholder={"Description"}
-              value={newText}
-              name="newText"
-              style={{ width: "100%" }}
-              onChange={e => this.inputHandler(e)}
-            />
-          </Table.Cell>
-        </Table.Row>
-        <Button
-          style={{ background: "transparent", color: "green" }}
-          onClick={() => this.addElement()}
-        >
-          <Icon name="add" />
-        </Button>
-      </>
-    );
 
     return (
       <>
         <Segment color="green">
           <Header>Skills</Header>
           <Segment.Group>
-            <Segment>{skillsDescription}</Segment>
             <Segment>
-              <Table celled>
+              {" "}
+              {editing ? (
+                <Input
+                  placeholder={skillsDescription}
+                  style={{ width: "100%" }}
+                  value={skillsDescription}
+                  name="skillsDescription"
+                  onChange={e => inputHandler(e)}
+                />
+              ) : (
+                skillsDescription
+              )}
+            </Segment>
+            <Segment>
+              <Table celled structured>
                 <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>Code</Table.HeaderCell>
@@ -154,18 +87,30 @@ export default class SkillsDisplay extends Component {
                     {editing && <Table.HeaderCell>Delete</Table.HeaderCell>}
                   </Table.Row>
                 </Table.Header>
-                <Table.Body>{skillsDisplay}</Table.Body>
-                <Table.Footer>
-                  {editing && !adding && (
-                    <Button
-                      style={{ background: "transparent" }}
-                      onClick={() => this.setState({ adding: !adding })}
-                    >
-                      <Icon name="add" />
-                    </Button>
+                <Table.Body>
+                  {elements && (
+                    <ElementsDisplay
+                      elements={elements}
+                      editElementHandler={editElementHandler}
+                      editing={editing}
+                      deleteHandler={this.deleteHandler}
+                      elementId={skillsId}
+                    />
                   )}
-                  {adding && editing && addingDisplay}
-                </Table.Footer>
+
+                  {editing && !adding && (
+                    <AddButton addingStateHandler={this.addingStateHandler} />
+                  )}
+                  {adding && editing && (
+                    <AddingDisplay
+                      newCode={newCode}
+                      newText={newText}
+                      inputHandler={this.inputHandler}
+                      addingStateHandler={this.addingStateHandler}
+                      addElement={this.addElement}
+                    />
+                  )}
+                </Table.Body>
               </Table>
             </Segment>
           </Segment.Group>

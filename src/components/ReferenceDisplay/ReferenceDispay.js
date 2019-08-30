@@ -42,6 +42,11 @@ export default class ReferenceDispay extends Component {
     }
   };
 
+  addingStateHandler = () => {
+    const { adding } = this.state;
+    this.setState({ adding: !adding });
+  };
+
   render() {
     const {
       resources,
@@ -117,23 +122,30 @@ export default class ReferenceDispay extends Component {
         <Segment color="red">
           <Header>References</Header>
           <Segment.Group>
-            <Table celled>
+            <Table celled structured>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>Resource Number</Table.HeaderCell>
                   <Table.HeaderCell>Resource Name</Table.HeaderCell>
+                  {editing && <Table.HeaderCell>Delete</Table.HeaderCell>}
                 </Table.Row>
               </Table.Header>
               <Table.Body>
                 {referenceDisplay}
+
                 {editing && !adding && (
-                  <Button
-                    style={{ background: "transparent" }}
-                    onClick={() => this.setState({ adding: !adding })}
-                  >
-                    <Icon name="add" />
-                  </Button>
+                  <Table.Row>
+                    <Table.Cell colSpan="3">
+                      <Button
+                        style={{ background: "transparent" }}
+                        onClick={() => this.setState({ adding: !adding })}
+                      >
+                        <Icon name="add" />
+                      </Button>
+                    </Table.Cell>
+                  </Table.Row>
                 )}
+
                 {adding && editing && (
                   <>
                     <Table.Row>
