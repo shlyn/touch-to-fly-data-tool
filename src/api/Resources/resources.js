@@ -82,3 +82,20 @@ export async function deleteResource({ id }) {
   const results = await client.request(mutation, variables);
   return results;
 }
+
+export async function getAllResources() {
+  const query = `
+    query AllResources {
+      resources {
+        documentName
+        documentNumber
+        id
+        thumbNailURL
+        urlString
+        updated_at
+      }
+      }
+    `;
+  const results = await client.request(query);
+  return results;
+}

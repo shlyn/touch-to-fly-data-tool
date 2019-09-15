@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Segment, Header, Input } from "semantic-ui-react";
 import styled from "styled-components";
-import ReferenceDisplay from "../ReferenceDisplay/ReferenceDispay";
+import ReferenceDisplay from "../ReferenceDisplay/ReferenceDisplay";
 import KnowledgeDisplay from "../KnowledgeDisplay/KnowledgeDisplay";
 import RiskManagementDisplay from "../RiskManagementDisplay/RiskManagementDisplay";
 import SkillsDisplay from "../SkillsDisplay/SkillsDisplay";
