@@ -37,6 +37,11 @@ export async function getTasksById({ id }) {
             id
       }
     }    elements {
+      sub_elements {
+        text
+        abbreviation_code
+        id
+      }
           id
           text
           abbreviation_code

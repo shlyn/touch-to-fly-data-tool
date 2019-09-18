@@ -1,3 +1,5 @@
+import { addResourceToTask, removeResource } from "../api/Resources/resources";
+
 const uuidv4 = require("uuid/v4");
 
 export const sortTasks = ({ tasks }) => {
@@ -80,11 +82,24 @@ export const updateTask = ({
 
   resources &&
     resources.map(data => {
-      const { id, resource, updated, addition, resource_id } = data;
+      console.log(data);
+      const {
+        id,
+        resource,
+        updated,
+        addition,
+        resource_id,
+        existing,
+        deleted
+      } = data;
       if (addition === true && updated !== true) {
         createResource({ resource, taskId, id });
       } else if (updated === true) {
         editResource({ resource_id, resource });
+      } else if (existing === true) {
+        addResourceToTask({ resource_id, taskId });
+      } else if (deleted === true) {
+        removeResource({ resource_id, taskId });
       }
       return null;
     });

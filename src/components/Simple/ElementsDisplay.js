@@ -12,7 +12,7 @@ const ElementsDisplay = ({
     elements &&
     elements.map(data => {
       const { text, abbreviation_code, type, id, addition } = data;
-      if (type.id === elementId) {
+      if (type.id === elementId && addition !== true) {
         if (editing) {
           return (
             <Table.Row key={id}>
@@ -31,6 +31,16 @@ const ElementsDisplay = ({
                   name="text"
                   style={{ width: "100%" }}
                   onChange={e => editElementHandler({ e, id })}
+                />
+              </Table.Cell>
+              <Table.Cell>
+                <Icon
+                  name="add"
+                  color="green"
+                  style={{
+                    fontSize: "1.3em"
+                  }}
+                  // onClick={() => removeInput({ i })}
                 />
               </Table.Cell>
               <Table.Cell>

@@ -11,6 +11,7 @@ import { editTask, deleteTask } from "../../api/Tasks/tasks";
 import { createResource, editResource } from "../../api/Resources/resources";
 import { createElement, editElement } from "../../api/Elements/elements";
 import { updateTask } from "../../utils/helpers";
+const uuidv4 = require("uuid/v4");
 
 export default class TaskDisplay extends Component {
   state = {
@@ -108,6 +109,39 @@ export default class TaskDisplay extends Component {
     this.setState({ resources: newResources });
   };
 
+  addElementInput = ({ element_id }) => {
+    const id = uuidv4();
+    const { elements } = this.state;
+    const element = {
+      type: { id: element_id },
+      id,
+      addition: true
+    };
+    elements.push(element);
+    this.setState({ elements });
+  };
+
+  inputHandlerCode = ({ e, i }) => {
+    let { elements } = this.state;
+    elements[i].abbreviation_code = e.target.value;
+    this.setState({ elements });
+  };
+
+  inputHandlerDescription = ({ e, i }) => {
+    let { elements } = this.state;
+    elements[i].text = e.target.value;
+    this.setState({ elements });
+  };
+
+  removeInput = ({ i }) => {
+    const { elements } = this.state;
+    const index = i;
+    const newElements = elements.filter((data, i) => {
+      return i !== index;
+    });
+    this.setState({ elements: newElements });
+  };
+
   render() {
     const {
       editing,
@@ -126,7 +160,7 @@ export default class TaskDisplay extends Component {
       letter,
       success
     } = this.state;
-
+    console.log(elements);
     return (
       <TaskContainer>
         <Button
@@ -191,30 +225,36 @@ export default class TaskDisplay extends Component {
             elements={elements}
             editing={editing}
             inputHandler={this.inputHandler}
-            knowledge={knowledge}
-            onAddingElement={this.onAddingElement}
+            inputHandlerCode={this.inputHandlerCode}
+            inputHandlerDescription={this.inputHandlerDescription}
             editElementHandler={this.editElementHandler}
             updateElements={this.updateElements}
+            addElementInput={this.addElementInput}
+            removeInput={this.removeInput}
           />
           <RiskManagementDisplay
             riskManagementDescription={riskManagementDescription}
             elements={elements}
             editing={editing}
             inputHandler={this.inputHandler}
-            riskManagement={riskManagement}
-            onAddingElement={this.onAddingElement}
+            inputHandlerCode={this.inputHandlerCode}
+            inputHandlerDescription={this.inputHandlerDescription}
             editElementHandler={this.editElementHandler}
             updateElements={this.updateElements}
+            addElementInput={this.addElementInput}
+            removeInput={this.removeInput}
           />
           <SkillsDisplay
-            skill={skill}
             skillsDescription={skillsDescription}
             elements={elements}
             editing={editing}
             inputHandler={this.inputHandler}
-            onAddingElement={this.onAddingElement}
+            inputHandlerCode={this.inputHandlerCode}
+            inputHandlerDescription={this.inputHandlerDescription}
             editElementHandler={this.editElementHandler}
             updateElements={this.updateElements}
+            addElementInput={this.addElementInput}
+            removeInput={this.removeInput}
           />
         </Segment.Group>
         <Button

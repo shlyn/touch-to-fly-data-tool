@@ -8,30 +8,6 @@ import AddButton from "../Simple/AddButton";
 import { addNewElement } from "../../utils/helpers";
 
 export default class RiskManagementDisplay extends Component {
-  state = { adding: false, newCode: "", newText: "" };
-  stateChanges = ({ changes }) => {
-    this.setState(changes);
-  };
-
-  addElement = () => {
-    const { elements, onAddingElement } = this.props;
-    const { newCode, newText, adding } = this.state;
-
-    addNewElement({
-      elements,
-      newCode,
-      newText,
-      adding,
-      elementId: riskManagementId,
-      stateChanges: this.stateChanges,
-      onAddingElement
-    });
-  };
-
-  inputHandler = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
   deleteHandler = ({ abbreviation_code, id }) => {
     const { updateElements } = this.props;
     const result = window.confirm(
@@ -43,20 +19,18 @@ export default class RiskManagementDisplay extends Component {
     }
   };
 
-  addingStateHandler = () => {
-    const { adding } = this.state;
-    this.setState({ adding: !adding });
-  };
-
   render() {
     const {
-      elements,
       riskManagementDescription,
+      elements,
       editing,
+      inputHandlerCode,
+      inputHandlerDescription,
+      removeInput,
       editElementHandler,
+      addElementInput,
       inputHandler
     } = this.props;
-    const { adding, newCode, newText } = this.state;
 
     return (
       <>
@@ -97,17 +71,19 @@ export default class RiskManagementDisplay extends Component {
                     />
                   )}
 
-                  {editing && !adding && (
-                    <AddButton addingStateHandler={this.addingStateHandler} />
-                  )}
-
-                  {adding && editing && (
+                  {elements && editing && (
                     <AddingDisplay
-                      newCode={newCode}
-                      newText={newText}
-                      inputHandler={this.inputHandler}
-                      addingStateHandler={this.addingStateHandler}
-                      addElement={this.addElement}
+                      elements={elements}
+                      inputHandlerCode={inputHandlerCode}
+                      inputHandlerDescription={inputHandlerDescription}
+                      elementId={riskManagementId}
+                      removeInput={removeInput}
+                    />
+                  )}
+                  {editing && (
+                    <AddButton
+                      addElementInput={addElementInput}
+                      elementId={riskManagementId}
                     />
                   )}
                 </Table.Body>

@@ -5,33 +5,8 @@ import { deleteElement } from "../../api/Elements/elements";
 import AddingDisplay from "../Simple/AddingDisplay";
 import ElementsDisplay from "../Simple/ElementsDisplay";
 import AddButton from "../Simple/AddButton";
-import { addNewElement } from "../../utils/helpers";
+
 export default class KnowledgeDisplay extends Component {
-  state = { adding: false, newCode: "", newText: "" };
-
-  stateChanges = ({ changes }) => {
-    this.setState(changes);
-  };
-
-  addElement = () => {
-    const { elements, onAddingElement } = this.props;
-    const { newCode, newText, adding } = this.state;
-
-    addNewElement({
-      elements,
-      newCode,
-      newText,
-      adding,
-      elementId: knowledgeId,
-      stateChanges: this.stateChanges,
-      onAddingElement
-    });
-  };
-
-  inputHandler = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
   deleteHandler = ({ abbreviation_code, id }) => {
     const { updateElements } = this.props;
     const result = window.confirm(
@@ -43,20 +18,18 @@ export default class KnowledgeDisplay extends Component {
     }
   };
 
-  addingStateHandler = () => {
-    const { adding } = this.state;
-    this.setState({ adding: !adding });
-  };
-
   render() {
     const {
       knowledgeDescription,
       elements,
       editing,
-      inputHandler,
-      editElementHandler
+      inputHandlerCode,
+      inputHandlerDescription,
+      removeInput,
+      editElementHandler,
+      addElementInput,
+      inputHandler
     } = this.props;
-    const { adding, newCode, newText } = this.state;
 
     return (
       <>
@@ -82,7 +55,12 @@ export default class KnowledgeDisplay extends Component {
                   <Table.Row>
                     <Table.HeaderCell>Code</Table.HeaderCell>
                     <Table.HeaderCell>Description</Table.HeaderCell>
-                    {editing && <Table.HeaderCell>Delete</Table.HeaderCell>}
+                    {editing && (
+                      <>
+                        <Table.HeaderCell>Add Sub Element</Table.HeaderCell>{" "}
+                        <Table.HeaderCell>Delete</Table.HeaderCell>
+                      </>
+                    )}
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -95,16 +73,19 @@ export default class KnowledgeDisplay extends Component {
                       elementId={knowledgeId}
                     />
                   )}
-                  {editing && !adding && (
-                    <AddButton addingStateHandler={this.addingStateHandler} />
-                  )}
-                  {adding && editing && (
+                  {elements && editing && (
                     <AddingDisplay
-                      newCode={newCode}
-                      newText={newText}
-                      inputHandler={this.inputHandler}
-                      addingStateHandler={this.addingStateHandler}
-                      addElement={this.addElement}
+                      elements={elements}
+                      inputHandlerCode={inputHandlerCode}
+                      inputHandlerDescription={inputHandlerDescription}
+                      elementId={knowledgeId}
+                      removeInput={removeInput}
+                    />
+                  )}
+                  {editing && (
+                    <AddButton
+                      addElementInput={addElementInput}
+                      elementId={knowledgeId}
                     />
                   )}
                 </Table.Body>

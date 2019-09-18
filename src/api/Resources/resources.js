@@ -10,7 +10,8 @@ const client = new GraphQL.GraphQLClient(
   }
 );
 
-export async function createResource({ resource, taskId }) {
+export async function createResource({ resource, taskId, id }) {
+  console.log(resource, taskId);
   const date = new Date();
   const dateFormatted = date.toISOString();
   const { documentName, documentNumber } = resource;
@@ -31,7 +32,7 @@ export async function createResource({ resource, taskId }) {
     created_at: dateFormatted,
     documentName,
     documentNumber,
-    id: uuidv4(),
+    id,
     urlString,
     task_id: taskId
   };
@@ -66,6 +67,34 @@ mutation ($id: uuid!, $updated_at: timestamptz!, $documentName: String!, $docume
   return results;
 }
 
+export async function addResourceToTask({ resource_id, taskId }) {
+  const post = `
+  mutation ($id: uuid!, $task_id: uuid!){
+    insert_resource_task(objects: {task_id: $task_id, resource_id: $id}) {
+      affected_rows
+      returning {
+        task {
+          name
+        }
+        resource {
+          documentName
+        }
+      }
+    }
+  }
+
+`;
+
+  const variables = {
+    id: resource_id,
+    task_id: taskId
+  };
+
+  const results = await client.request(post, variables);
+  console.log(results);
+  return results;
+}
+
 export async function deleteResource({ id }) {
   const mutation = `
   mutation ($id: uuid!){
@@ -97,5 +126,32 @@ export async function getAllResources() {
       }
     `;
   const results = await client.request(query);
+  return results;
+}
+
+export async function removeResource({ resource_id, taskId }) {
+  console.log(resource_id, taskId);
+  const mutation = `
+  mutation ($id: uuid!, $task_id: uuid!){
+    delete_resource_task(where: {resource_id: {_eq: $id}, task_id: {_eq: $task_id}}) {
+      affected_rows
+      returning {
+        task {
+          name
+        }
+        resource {
+          documentName
+        }
+      }
+    }
+  }
+
+`;
+  const variables = {
+    id: resource_id,
+    task_id: taskId
+  };
+
+  const results = await client.request(mutation, variables);
   return results;
 }

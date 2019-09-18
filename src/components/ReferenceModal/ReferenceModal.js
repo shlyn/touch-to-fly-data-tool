@@ -3,8 +3,10 @@ import { Button, Header, Segment, Modal } from "semantic-ui-react";
 import { getAllResources } from "../../api/Resources/resources";
 import ResourceList from "../ResourceList/ResourceList";
 
-const ReferenceModal = ({ addResourceToTask, adding }) => {
+const ReferenceModal = ({ addResourceToTask, resources }) => {
   const [resourceList, setResourceList] = useState([]);
+  const [open, setOpen] = useState(false);
+  console.log(open);
   useEffect(() => {
     const getResources = async () => {
       const resourceList = await getAllResources();
@@ -16,10 +18,11 @@ const ReferenceModal = ({ addResourceToTask, adding }) => {
   return (
     <Modal
       trigger={
-        <Button color="green" disabled={adding}>
+        <Button onClick={() => setOpen(true)} color="green">
           Add Resource
         </Button>
       }
+      open={open}
     >
       <Modal.Header>Select a Resource</Modal.Header>
       <Modal.Content>
@@ -29,6 +32,8 @@ const ReferenceModal = ({ addResourceToTask, adding }) => {
             <ResourceList
               resourceList={resourceList}
               addResourceToTask={addResourceToTask}
+              setOpen={setOpen}
+              resources={resources}
             />
           </Segment>
         </Modal.Description>

@@ -83,3 +83,75 @@ export async function deleteElement({ id }) {
   const results = await client.request(mutation, variables);
   return results;
 }
+
+export async function createSubElement({
+  abbreviation_code,
+  element_id,
+  text,
+  id
+}) {
+  const date = new Date();
+  const dateFormatted = date.toISOString();
+  const post = `
+  mutation($id: uuid!, $element_id: uuid!, $created_at: timestamptz!, $text: String!, $abbreviation_code: String!,$text: String!){
+    insert_sub_element(objects: {element_id: $element_id, id: $id, text: $text, created_at: $created_at, abbreviation_code: $abbreviation_code}) {
+      affected_rows
+      returning {
+        element {
+          abbreviation_code
+        }
+        abbreviation_code
+      }
+    }
+  }`;
+  const variables = {
+    abbreviation_code,
+    created_at: dateFormatted,
+    element_id,
+    text,
+    id
+  };
+
+  const results = await client.request(post, variables);
+  return results;
+}
+
+export async function editSubElement({ abbreviation_code, text, id }) {
+  const date = new Date();
+  const dateFormatted = date.toISOString();
+  const post = `
+  mutation ($id: uuid!, $updated_at: timestamptz!, $text: String!, $abbreviation_code: String!){
+    update_sub_element(where: { id: { _eq: $id } }, _set: { updated_at: $updated_at, text: $text, abbreviation_code: $abbreviation_code }) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }`;
+  const variables = {
+    abbreviation_code,
+    updated_at: dateFormatted,
+    text,
+    id
+  };
+
+  const results = await client.request(post, variables);
+  return results;
+}
+
+export async function deleteSubElement({ id }) {
+  const mutation = `
+  mutation ($id: uuid!){
+  delete_sub_element(where: { id: { _eq: $id } }) {
+    affected_rows
+  }
+}
+
+`;
+  const variables = {
+    id
+  };
+
+  const results = await client.request(mutation, variables);
+  return results;
+}

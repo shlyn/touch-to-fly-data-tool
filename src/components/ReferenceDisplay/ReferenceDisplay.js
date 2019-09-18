@@ -6,34 +6,6 @@ const uuidv4 = require("uuid/v4");
 export default class ReferenceDispay extends Component {
   state = { adding: false };
 
-  addResources = () => {
-    let { resources, resourceName, resourceNumber } = this.props;
-    const { adding } = this.state;
-    const id = uuidv4();
-    const resourceId = uuidv4();
-    const resource = {
-      resource: {
-        documentName: resourceName,
-        documentNumber: resourceNumber,
-        id: resourceId
-      },
-      addition: true,
-      id
-    };
-    if (resources) {
-      resources.push(resource);
-    } else {
-      resources = [resource];
-    }
-
-    this.props.onAddingElement({
-      resources,
-      resourceName: "",
-      resourceNumber: ""
-    });
-    this.setState({ adding: !adding });
-  };
-
   deleteHandler = ({ number, id, resource_id }) => {
     const { updateResources } = this.props;
     const result = window.confirm(`Are you sure you want to delete ${number}?`);
@@ -48,82 +20,76 @@ export default class ReferenceDispay extends Component {
     this.setState({ adding: !adding });
   };
 
-  addResourceToTask = ({ documentNumber, documentName }) => {
+  addResourceToTask = ({ documentNumber, documentName, resource_id, id }) => {
     let { resources } = this.props;
 
-    const id = uuidv4();
-    const resourceId = uuidv4();
     const resource = {
       resource: {
         documentName,
         documentNumber,
-        id: resourceId
+        id
       },
-      addition: true,
-      id
+      existing: true,
+      resource_id: id
     };
     if (resources) {
-      console.log(resources);
       resources.push(resource);
     } else {
       resources = [resource];
     }
-
-    // this.props.onAddingElement({
-    //   resources,
-    //   resourceName: "",
-    //   resourceNumber: ""
-    // });
+    this.props.onAddingElement({ resources });
   };
 
   inputHandlerNumber = ({ e, i }) => {
-    const { resources } = this.props;
-    resources[i].documentNumber = e.target.value;
+    let { resources } = this.props;
+    resources[i].resource.documentNumber = e.target.value;
     this.props.onAddingElement({ resources });
   };
 
   inputHandlerName = ({ e, i }) => {
-    const { resources } = this.props;
-    resources[i].documentName = e.target.value;
+    let { resources } = this.props;
+    resources[i].resource.documentName = e.target.value;
     this.props.onAddingElement({ resources });
   };
 
   addResourceInput = () => {
+    const id = uuidv4();
+    const resource_id = uuidv4();
     const { resources } = this.props;
-    resources.push({});
-    console.log(resources);
+
+    if (resources) {
+      resources.push({ resource: { resource_id }, id, addition: true });
+    } else {
+      resources = [{ resource: { resource_id }, id, addition: true }];
+    }
+
     this.props.onAddingElement({ resources });
     this.setState({ adding: true });
   };
 
-  removeResourceInput = ({ i }) => {
-    const { resources } = this.props;
+  removeResourceInput = ({ i, existing }) => {
+    console.log(existing);
+    let { resources } = this.props;
     const index = i;
-    const newResources = resources.filter((data, i) => {
-      return i !== index;
-    });
-    this.props.onAddingElement({ resources: newResources });
+    if (existing) {
+      resources[index].deleted = true;
+      this.props.onAddingElement({ resources });
+    } else {
+      const newResources = resources.filter((data, i) => {
+        return i !== index;
+      });
+      this.props.onAddingElement({ resources: newResources });
+    }
   };
 
   render() {
-    const {
-      resources,
-      editing,
-      inputHandler,
-      resourceName,
-      resourceNumber,
-      editResourceHandler
-    } = this.props;
-    let { adding } = this.state;
-
-    if (resources.every(data => data.id)) {
-      adding = false;
-    }
+    const { resources, editing, editResourceHandler } = this.props;
+    console.log(resources);
     const referenceDisplay =
       resources &&
       resources.map((data, i) => {
-        const { resource, id, resource_id } = data;
-        if (editing && id) {
+        const { resource, id, resource_id, addition, deleted } = data;
+        if (editing && !addition && !deleted) {
           return (
             <Table.Row key={id}>
               <Table.Cell>
@@ -133,7 +99,6 @@ export default class ReferenceDispay extends Component {
                   name="documentNumber"
                   value={resource.documentNumber}
                   style={{ width: "100%" }}
-                  disabled={resource_id === undefined}
                 />
               </Table.Cell>
               <Table.Cell>
@@ -143,7 +108,15 @@ export default class ReferenceDispay extends Component {
                   name="documentName"
                   value={resource.documentName}
                   style={{ width: "100%" }}
-                  disabled={resource_id === undefined}
+                />
+              </Table.Cell>
+              <Table.Cell>
+                <Icon
+                  name="delete"
+                  color="red"
+                  onClick={() =>
+                    this.removeResourceInput({ i, existing: true })
+                  }
                 />
               </Table.Cell>
               <Table.Cell>
@@ -155,7 +128,6 @@ export default class ReferenceDispay extends Component {
                   }}
                   color="red"
                   icon
-                  disabled={resource_id === undefined}
                   onClick={() =>
                     this.deleteHandler({
                       id,
@@ -169,7 +141,7 @@ export default class ReferenceDispay extends Component {
               </Table.Cell>
             </Table.Row>
           );
-        } else if (id) {
+        } else if (!editing) {
           return (
             <Table.Row key={resource.id}>
               <Table.Cell>{resource.documentNumber}</Table.Cell>
@@ -180,7 +152,7 @@ export default class ReferenceDispay extends Component {
       });
 
     const addingDisplay = resources.map((data, i) => {
-      if (!data.id || data.new) {
+      if (data.addition === true) {
         return (
           <>
             <Table.Row>
@@ -202,7 +174,7 @@ export default class ReferenceDispay extends Component {
                   style={{ width: "100%" }}
                 />
               </Table.Cell>
-              <Table.Cell>
+              <Table.Cell colSpan="2">
                 {" "}
                 <Icon
                   name="delete"
@@ -226,24 +198,27 @@ export default class ReferenceDispay extends Component {
                 <Table.Row>
                   <Table.HeaderCell>Resource Number</Table.HeaderCell>
                   <Table.HeaderCell>Resource Name</Table.HeaderCell>
+                  {editing && (
+                    <Table.HeaderCell>Remove From Task</Table.HeaderCell>
+                  )}
                   {editing && <Table.HeaderCell>Delete</Table.HeaderCell>}
                 </Table.Row>
               </Table.Header>
               <Table.Body>
                 {referenceDisplay}
-                {adding && editing && addingDisplay}
+                {editing && addingDisplay}
                 {editing && (
                   <Table.Row>
-                    <Table.Cell colSpan="3">
+                    <Table.Cell colSpan="4">
                       <Button
                         style={{ background: "transparent" }}
                         onClick={() => this.addResourceInput()}
                       >
-                        <Icon name="add" />
+                        <Icon name="add" /> New
                       </Button>
                       <ReferenceModal
                         addResourceToTask={this.addResourceToTask}
-                        adding={adding}
+                        resources={resources}
                       />
                     </Table.Cell>
                   </Table.Row>

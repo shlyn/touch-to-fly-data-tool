@@ -3,55 +3,60 @@ import React from "react";
 import { Button, Table, Icon, Input } from "semantic-ui-react";
 
 const AddingDisplay = ({
-  newCode,
-  newText,
-  inputHandler,
-  addingStateHandler,
-  addElement
+  inputHandlerCode,
+  inputHandlerDescription,
+  removeInput,
+  elements,
+  elementId
 }) => {
-  return (
-    <>
-      <Table.Row>
-        <Table.Cell>
-          <Input
-            placeholder={"Code"}
-            value={newCode}
-            name="newCode"
-            onChange={e => inputHandler(e)}
-          />
-        </Table.Cell>
-        <Table.Cell>
-          <Input
-            placeholder={"Description"}
-            value={newText}
-            name="newText"
-            style={{ width: "100%" }}
-            onChange={e => inputHandler(e)}
-          />
-        </Table.Cell>
-        <Table.Cell>
-          <Icon
-            name="delete"
-            color="red"
-            style={{
-              fontSize: "1.3em"
-            }}
-            onClick={() => addingStateHandler()}
-          />
-        </Table.Cell>
-      </Table.Row>
-      <Table.Row>
-        <Table.Cell colSpan="3">
-          <Button
-            style={{ background: "transparent", color: "green" }}
-            onClick={() => addElement()}
-          >
-            <Icon name="add" />
-          </Button>
-        </Table.Cell>
-      </Table.Row>
-    </>
-  );
+  const display = elements.map((data, i) => {
+    const { text, abbreviation_code, type, id, addition } = data;
+    if (type.id === elementId && addition === true) {
+      return (
+        <Table.Row>
+          <Table.Cell>
+            <Input
+              placeholder={"Code"}
+              value={abbreviation_code}
+              name="abbreviation_code"
+              onChange={e => inputHandlerCode({ e, i })}
+            />
+          </Table.Cell>
+          <Table.Cell>
+            <Input
+              placeholder={"Description"}
+              value={text}
+              name="text"
+              style={{ width: "100%" }}
+              onChange={e => inputHandlerDescription({ e, i })}
+            />
+          </Table.Cell>
+          <Table.Cell>
+            <Icon
+              name="add"
+              color="green"
+              style={{
+                fontSize: "1.3em"
+              }}
+              // onClick={() => removeInput({ i })}
+            />
+          </Table.Cell>
+          <Table.Cell>
+            <Icon
+              name="delete"
+              color="red"
+              style={{
+                fontSize: "1.3em"
+              }}
+              onClick={() => removeInput({ i })}
+            />
+          </Table.Cell>
+        </Table.Row>
+      );
+    }
+  });
+
+  return <>{display}</>;
 };
 
 export default AddingDisplay;
