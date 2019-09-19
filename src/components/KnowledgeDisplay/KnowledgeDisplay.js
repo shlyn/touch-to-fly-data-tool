@@ -26,9 +26,13 @@ export default class KnowledgeDisplay extends Component {
       inputHandlerCode,
       inputHandlerDescription,
       removeInput,
+      inputHandlerCodeSub,
+      inputHandlerDescriptionSub,
       editElementHandler,
+      editSubElementHandler,
       addElementInput,
-      inputHandler
+      inputHandler,
+      addSubElement
     } = this.props;
 
     return (
@@ -68,9 +72,14 @@ export default class KnowledgeDisplay extends Component {
                     <ElementsDisplay
                       elements={elements}
                       editElementHandler={editElementHandler}
+                      editSubElementHandler={editSubElementHandler}
                       editing={editing}
                       deleteHandler={this.deleteHandler}
                       elementId={knowledgeId}
+                      addSubElement={addSubElement}
+                      inputHandlerCodeSub={inputHandlerCodeSub}
+                      inputHandlerDescriptionSub={inputHandlerDescriptionSub}
+                      removeInput={removeInput}
                     />
                   )}
                   {elements && editing && (
@@ -78,16 +87,20 @@ export default class KnowledgeDisplay extends Component {
                       elements={elements}
                       inputHandlerCode={inputHandlerCode}
                       inputHandlerDescription={inputHandlerDescription}
+                      inputHandlerCodeSub={inputHandlerCodeSub}
+                      inputHandlerDescriptionSub={inputHandlerDescriptionSub}
                       elementId={knowledgeId}
                       removeInput={removeInput}
+                      addSubElement={addSubElement}
                     />
                   )}
-                  {editing && (
+
+                  {/* {editing && (
                     <AddButton
                       addElementInput={addElementInput}
                       elementId={knowledgeId}
                     />
-                  )}
+                  )} */}
                 </Table.Body>
               </Table>
             </Segment>

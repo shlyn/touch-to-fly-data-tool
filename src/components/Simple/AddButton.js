@@ -4,7 +4,7 @@ import { Button, Table, Icon } from "semantic-ui-react";
 const AddButton = ({ addElementInput, elementId }) => {
   return (
     <Table.Row>
-      <Table.Cell colSpan="3">
+      <Table.Cell colSpan="4">
         <Button
           style={{ background: "transparent" }}
           onClick={() => addElementInput({ element_id: elementId })}

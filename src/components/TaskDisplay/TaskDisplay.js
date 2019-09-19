@@ -85,6 +85,21 @@ export default class TaskDisplay extends Component {
     return null;
   };
 
+  editSubElementHandler = ({ e, i, mainId }) => {
+    const { elements } = this.state;
+    const index = i;
+    elements.map((data, i) => {
+      let { sub_elements } = data;
+      if (data.id === mainId) {
+        sub_elements[index][e.target.name] = e.target.value;
+        sub_elements[index].updated = true;
+        this.setState({ elements });
+      }
+      return null;
+    });
+    return null;
+  };
+
   editResourceHandler = ({ e, id }) => {
     const { resources } = this.state;
     resources.map((data, i) => {
@@ -115,9 +130,34 @@ export default class TaskDisplay extends Component {
     const element = {
       type: { id: element_id },
       id,
-      addition: true
+      addition: true,
+      sub_elements: []
     };
     elements.push(element);
+    this.setState({ elements });
+  };
+
+  inputHandlerCodeSub = ({ e, i, mainId }) => {
+    const index = i;
+    let { elements } = this.state;
+    elements.map((data, i) => {
+      let { sub_elements, id } = data;
+      if (id === mainId) {
+        sub_elements[index].abbreviation_code = e.target.value;
+      }
+    });
+    this.setState({ elements });
+  };
+
+  inputHandlerDescriptionSub = ({ e, i, mainId }) => {
+    const index = i;
+    let { elements } = this.state;
+    elements.map((data, i) => {
+      let { sub_elements, id } = data;
+      if (id === mainId) {
+        sub_elements[index].text = e.target.value;
+      }
+    });
     this.setState({ elements });
   };
 
@@ -142,6 +182,23 @@ export default class TaskDisplay extends Component {
     this.setState({ elements: newElements });
   };
 
+  addSubElement = ({ id }) => {
+    const subId = uuidv4();
+    const { elements } = this.state;
+    elements.map((data, i) => {
+      let { sub_elements } = data;
+      if (data.id === id) {
+        sub_elements.push({
+          abbreviation_code: "",
+          id: subId,
+          text: "",
+          addition: true
+        });
+      }
+    });
+    this.setState({ elements });
+  };
+
   render() {
     const {
       editing,
@@ -160,7 +217,8 @@ export default class TaskDisplay extends Component {
       letter,
       success
     } = this.state;
-    console.log(elements);
+    console.log(this.state);
+
     return (
       <TaskContainer>
         <Button
@@ -227,10 +285,14 @@ export default class TaskDisplay extends Component {
             inputHandler={this.inputHandler}
             inputHandlerCode={this.inputHandlerCode}
             inputHandlerDescription={this.inputHandlerDescription}
+            inputHandlerCodeSub={this.inputHandlerCodeSub}
+            inputHandlerDescriptionSub={this.inputHandlerDescriptionSub}
             editElementHandler={this.editElementHandler}
+            editSubElementHandler={this.editSubElementHandler}
             updateElements={this.updateElements}
             addElementInput={this.addElementInput}
             removeInput={this.removeInput}
+            addSubElement={this.addSubElement}
           />
           <RiskManagementDisplay
             riskManagementDescription={riskManagementDescription}
@@ -239,10 +301,13 @@ export default class TaskDisplay extends Component {
             inputHandler={this.inputHandler}
             inputHandlerCode={this.inputHandlerCode}
             inputHandlerDescription={this.inputHandlerDescription}
+            inputHandlerCodeSub={this.inputHandlerCodeSub}
+            inputHandlerDescriptionSub={this.inputHandlerDescriptionSub}
             editElementHandler={this.editElementHandler}
             updateElements={this.updateElements}
             addElementInput={this.addElementInput}
             removeInput={this.removeInput}
+            addSubElement={this.addSubElement}
           />
           <SkillsDisplay
             skillsDescription={skillsDescription}
@@ -251,10 +316,13 @@ export default class TaskDisplay extends Component {
             inputHandler={this.inputHandler}
             inputHandlerCode={this.inputHandlerCode}
             inputHandlerDescription={this.inputHandlerDescription}
+            inputHandlerCodeSub={this.inputHandlerCodeSub}
+            inputHandlerDescriptionSub={this.inputHandlerDescriptionSub}
             editElementHandler={this.editElementHandler}
             updateElements={this.updateElements}
             addElementInput={this.addElementInput}
             removeInput={this.removeInput}
+            addSubElement={this.addSubElement}
           />
         </Segment.Group>
         <Button
