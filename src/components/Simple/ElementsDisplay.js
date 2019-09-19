@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Table, Icon, Input } from "semantic-ui-react";
 import SubElementsDisplay from "./SubElementsDisplay";
+import AddingSubDisplay from "./AddingSubDisplay";
 const ElementsDisplay = ({
   elements,
   editElementHandler,
@@ -12,8 +13,10 @@ const ElementsDisplay = ({
   deleteSubHandler,
   inputHandlerCodeSub,
   inputHandlerDescriptionSub,
-  removeInput
+  removeInput,
+  removeInputSub
 }) => {
+  console.log("elements display");
   return (
     elements &&
     elements.map(data => {
@@ -75,15 +78,25 @@ const ElementsDisplay = ({
                 </Table.Cell>
               </Table.Row>
               {sub_elements.length > 0 && (
-                <SubElementsDisplay
-                  sub_elements={sub_elements}
-                  editSubElementHandler={editSubElementHandler}
-                  deleteSubHandler={deleteSubHandler}
-                  mainId={id}
-                  inputHandlerCodeSub={inputHandlerCodeSub}
-                  inputHandlerDescriptionSub={inputHandlerDescriptionSub}
-                  removeInput={removeInput}
-                />
+                <>
+                  <SubElementsDisplay
+                    sub_elements={sub_elements}
+                    editSubElementHandler={editSubElementHandler}
+                    deleteSubHandler={deleteSubHandler}
+                    mainId={id}
+                    inputHandlerCodeSub={inputHandlerCodeSub}
+                    inputHandlerDescriptionSub={inputHandlerDescriptionSub}
+                    removeInput={removeInput}
+                    removeInputSub={removeInputSub}
+                  />
+                  <AddingSubDisplay
+                    sub_elements={sub_elements}
+                    mainId={id}
+                    inputHandlerCodeSub={inputHandlerCodeSub}
+                    inputHandlerDescriptionSub={inputHandlerDescriptionSub}
+                    removeInputSub={removeInputSub}
+                  />
+                </>
               )}
             </>
           );
@@ -97,10 +110,12 @@ const ElementsDisplay = ({
               {sub_elements.map((data, i) => {
                 return (
                   <Table.Row key={id + i}>
-                    <Table.Cell textAlign="right">
+                    <Table.Cell style={{ paddingLeft: "30px" }}>
                       *{data.abbreviation_code}
                     </Table.Cell>
-                    <Table.Cell textAlign="right">{data.text}</Table.Cell>
+                    <Table.Cell style={{ paddingLeft: "30px" }}>
+                      {data.text}
+                    </Table.Cell>
                   </Table.Row>
                 );
               })}

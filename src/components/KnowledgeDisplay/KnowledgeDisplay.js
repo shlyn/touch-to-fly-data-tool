@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Segment, Header, Table, Input } from "semantic-ui-react";
 import { knowledgeId } from "../../utils/data";
-import { deleteElement } from "../../api/Elements/elements";
+import { deleteElement, deleteSubElement } from "../../api/Elements/elements";
 import AddingDisplay from "../Simple/AddingDisplay";
 import ElementsDisplay from "../Simple/ElementsDisplay";
 import AddButton from "../Simple/AddButton";
@@ -15,6 +15,17 @@ export default class KnowledgeDisplay extends Component {
     if (result === true) {
       deleteElement({ id });
       updateElements({ id });
+    }
+  };
+
+  deleteSubHandler = ({ abbreviation_code, id }) => {
+    const { updateSubElements } = this.props;
+    const result = window.confirm(
+      `Are you sure you want to delete ${abbreviation_code}?`
+    );
+    if (result === true) {
+      deleteSubElement({ id });
+      updateSubElements({ id });
     }
   };
 
@@ -32,7 +43,8 @@ export default class KnowledgeDisplay extends Component {
       editSubElementHandler,
       addElementInput,
       inputHandler,
-      addSubElement
+      addSubElement,
+      removeInputSub
     } = this.props;
 
     return (
@@ -75,11 +87,13 @@ export default class KnowledgeDisplay extends Component {
                       editSubElementHandler={editSubElementHandler}
                       editing={editing}
                       deleteHandler={this.deleteHandler}
+                      deleteSubHandler={this.deleteSubHandler}
                       elementId={knowledgeId}
                       addSubElement={addSubElement}
                       inputHandlerCodeSub={inputHandlerCodeSub}
                       inputHandlerDescriptionSub={inputHandlerDescriptionSub}
                       removeInput={removeInput}
+                      removeInputSub={removeInputSub}
                     />
                   )}
                   {elements && editing && (
@@ -92,15 +106,16 @@ export default class KnowledgeDisplay extends Component {
                       elementId={knowledgeId}
                       removeInput={removeInput}
                       addSubElement={addSubElement}
+                      removeInputSub={removeInputSub}
                     />
                   )}
 
-                  {/* {editing && (
+                  {editing && (
                     <AddButton
                       addElementInput={addElementInput}
                       elementId={knowledgeId}
                     />
-                  )} */}
+                  )}
                 </Table.Body>
               </Table>
             </Segment>

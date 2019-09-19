@@ -5,18 +5,14 @@ const SubElementsDisplay = ({
   sub_elements,
   editSubElementHandler,
   deleteSubHandler,
-  mainId,
-  inputHandlerCodeSub,
-  inputHandlerDescriptionSub,
-  removeInput
+  mainId
 }) => {
   return sub_elements.map((data, i) => {
     const { abbreviation_code, text, id, addition } = data;
     if (addition !== true) {
       return (
         <Table.Row>
-          <Table.Cell>
-            * Sub-element Code
+          <Table.Cell style={{ paddingLeft: "30px" }}>
             <Input
               placeholder={abbreviation_code}
               value={abbreviation_code}
@@ -24,8 +20,7 @@ const SubElementsDisplay = ({
               onChange={e => editSubElementHandler({ e, i, mainId })}
             />
           </Table.Cell>
-          <Table.Cell colSpan="2">
-            * Sub-element Description
+          <Table.Cell colSpan="2" style={{ paddingLeft: "30px" }}>
             <Input
               placeholder={text}
               value={text}
@@ -50,16 +45,6 @@ const SubElementsDisplay = ({
             </Button>
           </Table.Cell>
         </Table.Row>
-      );
-    } else if (addition === true) {
-      return (
-        <AddingSubDisplay
-          sub_elements={sub_elements}
-          mainId={id}
-          inputHandlerCodeSub={inputHandlerCodeSub}
-          inputHandlerDescriptionSub={inputHandlerDescriptionSub}
-          removeInput={removeInput}
-        />
       );
     }
   });

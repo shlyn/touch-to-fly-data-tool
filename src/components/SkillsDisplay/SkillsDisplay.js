@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { skillsId } from "../../utils/data";
 import { Segment, Header, Table, Input } from "semantic-ui-react";
-import { deleteElement } from "../../api/Elements/elements";
+import { deleteElement, deleteSubElement } from "../../api/Elements/elements";
 import AddingDisplay from "../Simple/AddingDisplay";
 import ElementsDisplay from "../Simple/ElementsDisplay";
 import AddButton from "../Simple/AddButton";
@@ -18,6 +18,16 @@ export default class SkillsDisplay extends Component {
     }
   };
 
+  deleteSubHandler = ({ abbreviation_code, id }) => {
+    const { updateSubElements } = this.props;
+    const result = window.confirm(
+      `Are you sure you want to delete ${abbreviation_code}?`
+    );
+    if (result === true) {
+      deleteSubElement({ id });
+      updateSubElements({ id });
+    }
+  };
   render() {
     const {
       skillsDescription,
@@ -26,9 +36,14 @@ export default class SkillsDisplay extends Component {
       inputHandlerCode,
       inputHandlerDescription,
       removeInput,
+      inputHandlerCodeSub,
+      inputHandlerDescriptionSub,
       editElementHandler,
+      editSubElementHandler,
       addElementInput,
-      inputHandler
+      inputHandler,
+      addSubElement,
+      removeInputSub
     } = this.props;
 
     return (
@@ -56,7 +71,12 @@ export default class SkillsDisplay extends Component {
                   <Table.Row>
                     <Table.HeaderCell>Code</Table.HeaderCell>
                     <Table.HeaderCell>Description</Table.HeaderCell>
-                    {editing && <Table.HeaderCell>Delete</Table.HeaderCell>}
+                    {editing && (
+                      <>
+                        <Table.HeaderCell>Add Sub Element</Table.HeaderCell>{" "}
+                        <Table.HeaderCell>Delete</Table.HeaderCell>
+                      </>
+                    )}
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -64,9 +84,16 @@ export default class SkillsDisplay extends Component {
                     <ElementsDisplay
                       elements={elements}
                       editElementHandler={editElementHandler}
+                      editSubElementHandler={editSubElementHandler}
                       editing={editing}
                       deleteHandler={this.deleteHandler}
+                      deleteSubHandler={this.deleteSubHandler}
                       elementId={skillsId}
+                      addSubElement={addSubElement}
+                      inputHandlerCodeSub={inputHandlerCodeSub}
+                      inputHandlerDescriptionSub={inputHandlerDescriptionSub}
+                      removeInput={removeInput}
+                      removeInputSub={removeInputSub}
                     />
                   )}
 
@@ -75,8 +102,12 @@ export default class SkillsDisplay extends Component {
                       elements={elements}
                       inputHandlerCode={inputHandlerCode}
                       inputHandlerDescription={inputHandlerDescription}
+                      inputHandlerCodeSub={inputHandlerCodeSub}
+                      inputHandlerDescriptionSub={inputHandlerDescriptionSub}
                       elementId={skillsId}
                       removeInput={removeInput}
+                      addSubElement={addSubElement}
+                      removeInputSub={removeInputSub}
                     />
                   )}
                   {editing && (

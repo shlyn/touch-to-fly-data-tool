@@ -86,6 +86,7 @@ export default class TaskDisplay extends Component {
   };
 
   editSubElementHandler = ({ e, i, mainId }) => {
+    console.log("editSubElementHandler");
     const { elements } = this.state;
     const index = i;
     elements.map((data, i) => {
@@ -118,6 +119,17 @@ export default class TaskDisplay extends Component {
     this.setState({ elements: newElements });
   };
 
+  updateSubElements = ({ id }) => {
+    const { elements } = this.state;
+    elements.map((data, i) => {
+      const { sub_elements } = data;
+      const newSubElements = sub_elements.filter(data => data.id !== id);
+      elements[i].sub_elements = newSubElements;
+    });
+
+    this.setState({ elements });
+  };
+
   updateResources = ({ id }) => {
     const { resources } = this.state;
     const newResources = resources.filter(data => data.id !== id);
@@ -138,26 +150,30 @@ export default class TaskDisplay extends Component {
   };
 
   inputHandlerCodeSub = ({ e, i, mainId }) => {
+    console.log("inputHandlerCodeSub");
     const index = i;
-    let { elements } = this.state;
+    const { elements } = this.state;
     elements.map((data, i) => {
       let { sub_elements, id } = data;
+
       if (id === mainId) {
         sub_elements[index].abbreviation_code = e.target.value;
       }
     });
+
     this.setState({ elements });
   };
 
   inputHandlerDescriptionSub = ({ e, i, mainId }) => {
     const index = i;
-    let { elements } = this.state;
+    const { elements } = this.state;
     elements.map((data, i) => {
       let { sub_elements, id } = data;
       if (id === mainId) {
         sub_elements[index].text = e.target.value;
       }
     });
+
     this.setState({ elements });
   };
 
@@ -185,9 +201,11 @@ export default class TaskDisplay extends Component {
   addSubElement = ({ id }) => {
     const subId = uuidv4();
     const { elements } = this.state;
+    console.log(id, elements);
     elements.map((data, i) => {
       let { sub_elements } = data;
       if (data.id === id) {
+        console.log("MATCH");
         sub_elements.push({
           abbreviation_code: "",
           id: subId,
@@ -195,6 +213,20 @@ export default class TaskDisplay extends Component {
           addition: true
         });
       }
+    });
+    this.setState({ elements });
+  };
+
+  removeInputSub = ({ i, mainId }) => {
+    const { elements } = this.state;
+    const index = i;
+
+    elements.map((data, i) => {
+      let { sub_elements } = data;
+      const newSubElements = sub_elements.filter((data, i) => {
+        return i !== index;
+      });
+      elements[i].sub_elements = newSubElements;
     });
     this.setState({ elements });
   };
@@ -293,6 +325,8 @@ export default class TaskDisplay extends Component {
             addElementInput={this.addElementInput}
             removeInput={this.removeInput}
             addSubElement={this.addSubElement}
+            removeInputSub={this.removeInputSub}
+            updateSubElements={this.updateSubElements}
           />
           <RiskManagementDisplay
             riskManagementDescription={riskManagementDescription}
@@ -308,6 +342,8 @@ export default class TaskDisplay extends Component {
             addElementInput={this.addElementInput}
             removeInput={this.removeInput}
             addSubElement={this.addSubElement}
+            removeInputSub={this.removeInputSub}
+            updateSubElements={this.updateSubElements}
           />
           <SkillsDisplay
             skillsDescription={skillsDescription}
@@ -323,6 +359,8 @@ export default class TaskDisplay extends Component {
             addElementInput={this.addElementInput}
             removeInput={this.removeInput}
             addSubElement={this.addSubElement}
+            removeInputSub={this.removeInputSub}
+            updateSubElements={this.updateSubElements}
           />
         </Segment.Group>
         <Button

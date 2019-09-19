@@ -1,5 +1,5 @@
 import { addResourceToTask, removeResource } from "../api/Resources/resources";
-
+import { createSubElement, editSubElement } from "../api/Elements/elements";
 const uuidv4 = require("uuid/v4");
 
 export const sortTasks = ({ tasks }) => {
@@ -106,9 +106,17 @@ export const updateTask = ({
 
   elements &&
     elements.map(data => {
-      const { id, abbreviation_code, text, type, updated, addition } = data;
+      const {
+        id,
+        abbreviation_code,
+        text,
+        type,
+        updated,
+        addition,
+        sub_elements
+      } = data;
       const typeId = type.id;
-
+      const elementId = id;
       if (addition === true && updated !== true) {
         createElement({
           abbreviation_code,
@@ -120,6 +128,30 @@ export const updateTask = ({
       } else if (updated === true) {
         editElement({ id, text, abbreviation_code });
       }
+
+      sub_elements.map(data => {
+        const { abbreviation_code, id, text, addition, updated } = data;
+        if (addition === true && updated !== true) {
+          console.log("creating");
+          setTimeout(
+            () =>
+              createSubElement({
+                abbreviation_code,
+                text,
+                elementId,
+                id
+              }),
+            1000
+          );
+        } else if (updated === true) {
+          console.log("editing");
+          setTimeout(
+            () => editSubElement({ id, text, abbreviation_code }),
+            1000
+          );
+        }
+      });
+
       return null;
     });
   setTimeout(() => stateChanges({ changes: { success: false } }), 2000);

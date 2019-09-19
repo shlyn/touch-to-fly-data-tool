@@ -11,7 +11,8 @@ const AddingDisplay = ({
   removeInput,
   elements,
   elementId,
-  addSubElement
+  addSubElement,
+  removeInputSub
 }) => {
   const display = elements.map((data, i) => {
     const { text, abbreviation_code, type, id, addition, sub_elements } = data;
@@ -43,7 +44,7 @@ const AddingDisplay = ({
                 style={{
                   fontSize: "1.3em"
                 }}
-                onClick={() => addSubElement({ i })}
+                onClick={() => addSubElement({ id })}
               />
             </Table.Cell>
             <Table.Cell>
@@ -62,7 +63,7 @@ const AddingDisplay = ({
             mainId={id}
             inputHandlerCodeSub={inputHandlerCodeSub}
             inputHandlerDescriptionSub={inputHandlerDescriptionSub}
-            removeInput={removeInput}
+            removeInputSub={removeInputSub}
           />
         </>
       );

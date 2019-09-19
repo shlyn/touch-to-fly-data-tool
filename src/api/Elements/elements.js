@@ -86,14 +86,15 @@ export async function deleteElement({ id }) {
 
 export async function createSubElement({
   abbreviation_code,
-  element_id,
+  elementId,
   text,
   id
 }) {
+  console.log(abbreviation_code, elementId, text, id);
   const date = new Date();
   const dateFormatted = date.toISOString();
   const post = `
-  mutation($id: uuid!, $element_id: uuid!, $created_at: timestamptz!, $text: String!, $abbreviation_code: String!,$text: String!){
+  mutation($id: uuid!, $element_id: uuid!, $created_at: timestamptz!, $text: String!, $abbreviation_code: String!){
     insert_sub_element(objects: {element_id: $element_id, id: $id, text: $text, created_at: $created_at, abbreviation_code: $abbreviation_code}) {
       affected_rows
       returning {
@@ -107,16 +108,17 @@ export async function createSubElement({
   const variables = {
     abbreviation_code,
     created_at: dateFormatted,
-    element_id,
+    element_id: elementId,
     text,
     id
   };
-
+  console.log(variables);
   const results = await client.request(post, variables);
   return results;
 }
 
 export async function editSubElement({ abbreviation_code, text, id }) {
+  console.log(abbreviation_code, text, id);
   const date = new Date();
   const dateFormatted = date.toISOString();
   const post = `
