@@ -30,11 +30,13 @@ export default class ReferenceDispay extends Component {
     const index = i;
     if (existing) {
       resources[index].deleted = true;
+      console.log(resources);
       this.props.onAddingElement({ resources });
     } else {
       const newResources = resources.filter((data, i) => {
         return i !== index;
       });
+      console.log(newResources);
       this.props.onAddingElement({ resources: newResources });
     }
   };

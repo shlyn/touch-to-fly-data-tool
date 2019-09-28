@@ -51,8 +51,6 @@ export const updateTask = ({
   state,
   editTask,
   stateChanges,
-  createResource,
-  editResource,
   createElement,
   editElement
 }) => {
@@ -82,7 +80,6 @@ export const updateTask = ({
 
   resources &&
     resources.map(data => {
-      console.log(data);
       const {
         id,
         resource,
@@ -92,10 +89,11 @@ export const updateTask = ({
         existing,
         deleted
       } = data;
-      if (existing === true) {
-        addResourceToTask({ resource_id, taskId });
-      } else if (deleted === true) {
+      if (deleted === true) {
+        console.log(resource, "deleting");
         removeResource({ resource_id, taskId });
+      } else if (existing === true) {
+        addResourceToTask({ resource_id, taskId });
       }
       return null;
     });
@@ -128,7 +126,6 @@ export const updateTask = ({
       sub_elements.map(data => {
         const { abbreviation_code, id, text, addition, updated } = data;
         if (addition === true && updated !== true) {
-          console.log("creating");
           setTimeout(
             () =>
               createSubElement({
@@ -140,7 +137,6 @@ export const updateTask = ({
             1000
           );
         } else if (updated === true) {
-          console.log("editing");
           setTimeout(
             () => editSubElement({ id, text, abbreviation_code }),
             1000

@@ -132,7 +132,7 @@ export async function getAllResources() {
 }
 
 export async function removeResource({ resource_id, taskId }) {
-  console.log(resource_id, taskId);
+  console.log(resource_id, taskId, "REMOVING");
   const mutation = `
   mutation ($id: uuid!, $task_id: uuid!){
     delete_resource_task(where: {resource_id: {_eq: $id}, task_id: {_eq: $task_id}}) {
