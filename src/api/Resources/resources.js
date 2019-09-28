@@ -10,15 +10,14 @@ const client = new GraphQL.GraphQLClient(
   }
 );
 
-export async function createResource({ resource, taskId, id }) {
-  console.log(resource, taskId);
+export async function createResource({ documentName, documentNumber, id }) {
   const date = new Date();
   const dateFormatted = date.toISOString();
-  const { documentName, documentNumber } = resource;
   const urlString = "www.test.com";
+  console.log(documentName, documentNumber);
   const post = `
-  mutation ($created_at: timestamptz!, $documentName: String!, $documentNumber: String!, $id: uuid!, $urlString: String!, $task_id: uuid!){
-  insert_resources(objects: {created_at: $created_at, documentName: $documentName, documentNumber: $documentNumber, id: $id, urlString: $urlString, tasks: {data: {task_id: $task_id}}}) {
+  mutation ($created_at: timestamptz!, $documentName: String!, $documentNumber: String!, $id: uuid!, $urlString: String!){
+  insert_resources(objects: {created_at: $created_at, documentName: $documentName, documentNumber: $documentNumber, id: $id, urlString: $urlString}) {
     affected_rows
     returning {
       id
@@ -33,18 +32,20 @@ export async function createResource({ resource, taskId, id }) {
     documentName,
     documentNumber,
     id,
-    urlString,
-    task_id: taskId
+    urlString
   };
   const results = await client.request(post, variables);
   return results;
 }
 
-export async function editResource({ resource_id, resource }) {
+export async function editResource({
+  resource_id,
+  documentNumber,
+  documentName
+}) {
   const date = new Date();
   const dateFormatted = date.toISOString();
-  const { documentName, documentNumber } = resource;
-
+  console.log(resource_id, documentNumber, documentName);
   const post = `
 mutation ($id: uuid!, $updated_at: timestamptz!, $documentName: String!, $documentNumber: String!){
   update_resources(where: { id: { _eq: $id } }, _set: { updated_at: $updated_at, documentName: $documentName, documentNumber: $documentNumber }) {
@@ -122,6 +123,7 @@ export async function getAllResources() {
         thumbNailURL
         urlString
         updated_at
+        created_at
       }
       }
     `;

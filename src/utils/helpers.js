@@ -92,11 +92,7 @@ export const updateTask = ({
         existing,
         deleted
       } = data;
-      if (addition === true && updated !== true) {
-        createResource({ resource, taskId, id });
-      } else if (updated === true) {
-        editResource({ resource_id, resource });
-      } else if (existing === true) {
+      if (existing === true) {
         addResourceToTask({ resource_id, taskId });
       } else if (deleted === true) {
         removeResource({ resource_id, taskId });

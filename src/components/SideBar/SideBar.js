@@ -15,11 +15,18 @@ export default class SideBar extends Component {
           visible
           width="thin"
         >
-          <Link to="/entries">
+          <Link to="/">
             <Menu.Item>
               <Icon name="home" />
               Areas Of Operation
             </Menu.Item>
+            </Link>
+            <Link to="/resources">
+            <Menu.Item>
+              <Icon name="list" />
+              Resources
+            </Menu.Item>
+
           </Link>
         </Sidebar>
       </Container>

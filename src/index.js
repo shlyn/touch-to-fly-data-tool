@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import Entries from "./components/Entries/Entries";
 import Entry from "./components/Entry/Entry";
+import Resources from "./components/Resources/Resources";
 import * as serviceWorker from "./serviceWorker";
 import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -15,8 +16,8 @@ const routing = (
       <App />
       <Switch>
         <Route exact path="/" component={Entries} />
-        <Route exact path="/entries" component={Entries} />
         <Route exact path="/entry" component={Entry} />
+        <Route exact path="/resources" component={Resources} />
       </Switch>
     </Router>
   </Provider>
