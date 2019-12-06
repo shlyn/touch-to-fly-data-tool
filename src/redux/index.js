@@ -1,4 +1,7 @@
 import taskReducer from "./tasks";
-import { createStore } from "redux";
+import ACSReducer from "./ACS";
+import { createStore, combineReducers } from "redux";
 
-export default createStore(taskReducer, {});
+const rootReducer = combineReducers({ task: taskReducer, ACS: ACSReducer });
+
+export default createStore(rootReducer, {});

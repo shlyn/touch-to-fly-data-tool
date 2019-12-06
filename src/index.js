@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import Entries from "./components/Entries/Entries";
+import ACS from "./components/ACS/ACS";
 import Entry from "./components/Entry/Entry";
 import Resources from "./components/Resources/Resources";
 import * as serviceWorker from "./serviceWorker";
@@ -15,7 +16,8 @@ const routing = (
     <Router>
       <App />
       <Switch>
-        <Route exact path="/" component={Entries} />
+        <Route exact path="/" component={ACS} />
+        <Route exact path="/entries" component={Entries} />
         <Route exact path="/entry" component={Entry} />
         <Route exact path="/resources" component={Resources} />
       </Switch>

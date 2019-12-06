@@ -5,6 +5,7 @@ import {
   getAllAreasOfOperation,
   editAreaOfOperation
 } from "../../api/AreasOfOperation/areasOfOperation";
+import { getACS } from "../../api/ACS/ACS";
 import EntryTable from "../EntryTable/EntryTable";
 import SuccessMessage from "../Simple/SuccessMessage";
 
@@ -12,11 +13,14 @@ export default class Entries extends Component {
   state = { editing: false, success: false };
 
   async componentDidMount() {
-    const results = await getAllAreasOfOperation();
+    const id = await localStorage.getItem("ACSId");
+    const name = await localStorage.getItem("ACSName");
+    console.log(id);
+    const results = await getAllAreasOfOperation({ id });
     const areasOfOperation = results.area_of_operation.sort(
       (a, b) => parseFloat(a.order) - parseFloat(b.order)
     );
-    this.setState({ areasOfOperation });
+    this.setState({ areasOfOperation, ACSName: name });
   }
 
   updateAOOHandler = ({ id, order, numeral, name }) => {
@@ -49,11 +53,11 @@ export default class Entries extends Component {
   };
 
   render() {
-    const { areasOfOperation, editing, success } = this.state;
+    const { areasOfOperation, editing, success, ACSName } = this.state;
 
     return (
       <Container>
-        <Header as="h3">Current Areas Of Operation</Header>
+        <Header as="h3">Current Areas Of Operation - {ACSName}</Header>
         <SuccessMessage success={success} />
         {areasOfOperation && (
           <EntryTable

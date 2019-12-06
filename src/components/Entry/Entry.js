@@ -199,10 +199,7 @@ const mapDispatchToProps = {
   getTaskId
 };
 
-export default connect(
-  state => state,
-  mapDispatchToProps
-)(Entry);
+export default connect(state => state, mapDispatchToProps)(Entry);
 
 const Container = styled.div`
   display: grid;

@@ -18,15 +18,14 @@ export default class SideBar extends Component {
           <Link to="/">
             <Menu.Item>
               <Icon name="home" />
-              Areas Of Operation
+              ACS
             </Menu.Item>
-            </Link>
-            <Link to="/resources">
+          </Link>
+          <Link to="/resources">
             <Menu.Item>
               <Icon name="list" />
               Resources
             </Menu.Item>
-
           </Link>
         </Sidebar>
       </Container>

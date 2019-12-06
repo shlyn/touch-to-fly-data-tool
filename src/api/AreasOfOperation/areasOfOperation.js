@@ -10,10 +10,10 @@ const client = new GraphQL.GraphQLClient(
   }
 );
 
-export async function getAllAreasOfOperation() {
+export async function getAllAreasOfOperation({ id }) {
   const query = `
-    query AllAreasOfOperation {
-        area_of_operation {
+    query($id: uuid!) {
+        area_of_operation(where: { airman_certification_standards_id: { _eq: $id } }) {
           id
           name
           numeral
@@ -21,7 +21,12 @@ export async function getAllAreasOfOperation() {
         }
       }
     `;
-  const results = await client.request(query);
+
+  const variables = {
+    id
+  };
+
+  const results = await client.request(query, variables);
   return results;
 }
 
