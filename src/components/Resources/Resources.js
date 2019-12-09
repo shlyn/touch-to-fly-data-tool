@@ -10,6 +10,10 @@ export default class Resources extends Component {
 
   async componentDidMount() {
     this.setState({ resources: await this.getResources() });
+    const validated = await localStorage.getItem("validated");
+    if (!validated) {
+      this.props.history.push("/");
+    }
   }
 
   updateResourceHandler = ({ resource_id, documentNumber, documentName }) => {

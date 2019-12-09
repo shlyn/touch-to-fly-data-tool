@@ -17,6 +17,10 @@ class Entry extends Component {
   };
 
   async componentDidMount() {
+    const validated = await localStorage.getItem("validated");
+    if (!validated) {
+      this.props.history.push("/");
+    }
     this.getTasks();
   }
 

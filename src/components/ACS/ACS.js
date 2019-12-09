@@ -14,6 +14,11 @@ export default class Entries extends Component {
       (a, b) => parseFloat(a.order) - parseFloat(b.order)
     );
     this.setState({ ACS });
+
+    const validated = await localStorage.getItem("validated");
+    if (!validated) {
+      this.props.history.push("/");
+    }
   }
 
   updateACSHandler = ({ id, name }) => {

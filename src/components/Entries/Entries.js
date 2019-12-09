@@ -13,6 +13,10 @@ export default class Entries extends Component {
   state = { editing: false, success: false };
 
   async componentDidMount() {
+    const validated = await localStorage.getItem("validated");
+    if (!validated) {
+      this.props.history.push("/");
+    }
     const id = await localStorage.getItem("ACSId");
     const name = await localStorage.getItem("ACSName");
     console.log(id);
